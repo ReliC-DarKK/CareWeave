@@ -1,0 +1,174 @@
+.section {
+  width: 100%;
+}
+
+.card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  padding: var(--space-xl);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-2xl);
+  align-items: stretch;
+}
+
+.primaryColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.headerIcon {
+  color: var(--color-accent-primary);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.statusDisplay {
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--color-clinical-teal);
+}
+
+.statusIcon {
+  flex-shrink: 0;
+}
+
+.statusText {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.2px;
+}
+
+.statusDescription {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.alignmentBox {
+  border-left: 3px solid var(--color-accent-primary);
+  background-color: var(--color-bg-surface-subtle);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.alignmentLabel {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.alignmentText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.metricsColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-md);
+  border-left: 1px solid var(--color-border-subtle);
+  padding-left: var(--space-xl);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.metricCard {
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metricValue {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricLabel {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+.syncFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.syncIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.syncText {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 1024px) {
+  .card {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .metricsColumn {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: var(--space-lg);
+  }
+}

@@ -1,0 +1,160 @@
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-bg-surface);
+  border-right: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 20;
+}
+
+.brand {
+  padding: var(--space-xl) var(--space-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.brandHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.brandLogo {
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-accent-primary);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brandIcon {
+  color: #FFFFFF;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.5px;
+}
+
+.brandName {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+
+.brandTagline {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  margin-top: 1px;
+}
+
+.nav {
+  flex: 1;
+  padding: var(--space-lg) var(--space-sm);
+  overflow-y: auto;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.navItem {
+  margin: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.navLink:hover {
+  background-color: var(--color-bg-surface-subtle);
+  color: var(--color-text-primary);
+}
+
+.activeLink {
+  background-color: var(--color-accent-light);
+  color: var(--color-accent-primary);
+  font-weight: var(--font-weight-semibold);
+  border-left: 3px solid var(--color-accent-primary);
+}
+
+.navIcon {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.activeLink .navIcon {
+  opacity: 1;
+  color: var(--color-accent-primary);
+}
+
+.navLabel {
+  letter-spacing: 0.1px;
+}
+
+.footer {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--color-border-subtle);
+  background-color: var(--color-bg-surface-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.patientProfile {
+  display: flex;
+  align-items: center;
+}
+
+.patientMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.patientName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.patientId {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  font-family: monospace;
+  letter-spacing: 0.3px;
+}
+
+.complianceNotice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  padding-top: var(--space-2xs);
+  border-top: 1px dashed var(--color-border-subtle);
+}
+
+.complianceIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}

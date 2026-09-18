@@ -1,0 +1,65 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sectionIcon {
+  color: var(--color-accent-primary);
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.sectionDescription {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.countBadge {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.2px;
+}
+
+.conditionsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1200px) {
+  .conditionsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .conditionsGrid {
+    grid-template-columns: 1fr;
+  }
+}

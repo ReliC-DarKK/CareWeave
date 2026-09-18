@@ -1,0 +1,24 @@
+.appContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg-canvas);
+}
+
+.mainWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Prevents flex overflow */
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .appContainer {
+    /* Responsive adjustment for ~1024px */
+  }
+}

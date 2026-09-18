@@ -1,0 +1,82 @@
+:root {
+  /* Surface and Background Palettes */
+  --color-bg-canvas: #F4F6F9;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-surface-subtle: #F8FAFC;
+  --color-bg-surface-elevated: #FFFFFF;
+  --color-bg-muted: #EDF2F7;
+
+  /* Typography & High-Contrast Clinical Text */
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748B;
+  --color-text-subtle: #94A3B8;
+
+  /* Restrained Clinical Accent: Muted Deep Indigo / Slate Navy */
+  --color-accent-primary: #314166;
+  --color-accent-hover: #232F4C;
+  --color-accent-light: #EEF2F8;
+  --color-accent-border: #CBD5E1;
+
+  /* Clinical Signal Accents (used sparingly and with restrained clinical tone) */
+  --color-clinical-teal: #0F766E;
+  --color-clinical-teal-bg: #F0FDFA;
+  --color-clinical-teal-border: #CCFBF1;
+
+  --color-clinical-amber: #B45309;
+  --color-clinical-amber-bg: #FFFBEB;
+  --color-clinical-amber-border: #FEF3C7;
+
+  --color-clinical-slate: #475569;
+  --color-clinical-slate-bg: #F1F5F9;
+  --color-clinical-slate-border: #E2E8F0;
+
+  /* Structural Borders */
+  --color-border-subtle: #E2E8F0;
+  --color-border-medium: #CBD5E1;
+  --color-border-strong: #94A3B8;
+
+  /* Spatial Scale */
+  --space-2xs: 4px;
+  --space-xs: 6px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  --space-4xl: 40px;
+
+  /* Type Scale */
+  --font-size-2xs: 0.6875rem; /* 11px */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.8125rem;  /* 13px */
+  --font-size-base: 0.875rem; /* 14px */
+  --font-size-md: 0.9375rem;  /* 15px */
+  --font-size-lg: 1rem;       /* 16px */
+  --font-size-xl: 1.125rem;   /* 18px */
+  --font-size-2xl: 1.25rem;   /* 20px */
+  --font-size-3xl: 1.5rem;    /* 24px */
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Moderate Radii (never bubbly or excessively round) */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Restrained Shadows (flat, clinical, clean) */
+  --shadow-subtle: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-popover: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+
+  /* Layout Consts */
+  --sidebar-width: 240px;
+  --header-height: 64px;
+}
