@@ -16,8 +16,9 @@ function getEventColorClass(category) {
 }
 
 export function CareJourneyPreview({ events }) {
-  // Show strictly only 3 recent events for a calm, uncluttered Home preview
-  const previewEvents = (events || []).slice(0, 3);
+  // Highlight 3 active current events (Today & Tomorrow) for a calm Home preview
+  const currentEvents = (events || []).filter((e) => e.dateGroup === 'TODAY' || e.dateGroup === 'TOMORROW');
+  const previewEvents = currentEvents.length >= 3 ? currentEvents.slice(0, 3) : (events || []).slice(0, 3);
 
   return (
     <section className={styles.section} aria-labelledby="journey-preview-heading">

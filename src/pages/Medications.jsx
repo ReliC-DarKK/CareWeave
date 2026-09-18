@@ -1,9 +1,11 @@
 import React from 'react';
-import { Pill, Clock, User, Calendar, AlertCircle } from 'lucide-react';
-import { DEMO_MEDICATIONS } from '../data/mockData';
+import { Pill, Clock, User, Calendar, FileCheck, CheckCircle2 } from 'lucide-react';
+import { useCareData } from '../context/CareDataContext';
 import styles from './Medications.module.css';
 
 export function Medications() {
+  const { medications } = useCareData();
+
   return (
     <div className={styles.container}>
       <header className={styles.pageHeader}>
@@ -20,7 +22,7 @@ export function Medications() {
 
       {/* Medication List */}
       <div className={styles.medicationsList}>
-        {DEMO_MEDICATIONS.map((med) => (
+        {medications.map((med) => (
           <article key={med.id} className={styles.medCard}>
             <div className={styles.cardMain}>
               <div className={styles.medHeaderRow}>
@@ -37,12 +39,32 @@ export function Medications() {
                       <span className={styles.bulletSeparator} aria-hidden="true">•</span>
                       <span className={styles.conditionText}>{med.condition}</span>
                     </div>
+                    {med.sourceDocument && (
+                      <div className={styles.sourceDocRow}>
+                        <FileCheck size={12} aria-hidden="true" />
+                        <span>Extracted from: {med.sourceDocument}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <span className={`${styles.statusBadge} ${med.status.includes('Queued') ? styles.statusQueued : styles.statusActive}`}>
-                  {med.status}
-                </span>
+                <div className={styles.medBadgeGroup}>
+                  {med.isUploaded && (
+                    <span className={styles.uploadedBadge}>
+                      <CheckCircle2 size={11} aria-hidden="true" />
+                      Added from Uploaded Record
+                    </span>
+                  )}
+                  <span
+                    className={`${styles.statusBadge} ${
+                      med.status.includes('Queued')
+                        ? styles.statusQueued
+                        : styles.statusActive
+                    }`}
+                  >
+                    {med.status}
+                  </span>
+                </div>
               </div>
 
               {/* Timing & Dosing Schedule */}
@@ -60,7 +82,9 @@ export function Medications() {
                 </div>
                 <div className={styles.refillInfo}>
                   <Calendar size={13} className={styles.metaIcon} aria-hidden="true" />
-                  <span>Next Refill: <strong>{med.nextRefill}</strong> ({med.refillsRemaining} remaining)</span>
+                  <span>
+                    Next Refill: <strong>{med.nextRefill}</strong> ({med.refillsRemaining} remaining)
+                  </span>
                 </div>
               </div>
             </div>

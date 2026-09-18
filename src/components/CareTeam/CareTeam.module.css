@@ -118,13 +118,42 @@
   color: var(--color-text-secondary);
 }
 
+.contactButtonsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: 4px;
+}
+
+.phoneAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #047857;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-xs);
+  padding: 3px 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.phoneAction:hover {
+  background-color: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
 .contactAction {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 0.6875rem;
   color: var(--color-accent-primary);
-  font-family: monospace;
+  font-family: inherit;
+  padding: 3px 6px;
 }
 
 .contactAction:hover {

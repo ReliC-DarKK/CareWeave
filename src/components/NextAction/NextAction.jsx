@@ -13,6 +13,7 @@ function getConditionTagClass(conditionName) {
 export function NextAction({ actions }) {
   if (!actions || actions.length === 0) return null;
 
+  const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
   const primaryAction = actions[0];
   // Keep only 1 or 2 very compact upcoming items per user requirement
   const secondaryActions = actions.slice(1, 3);
@@ -61,13 +62,58 @@ export function NextAction({ actions }) {
           <button
             type="button"
             className={styles.viewDetailsButton}
-            onClick={() => {}}
-            aria-label={`View details for ${primaryAction.title}`}
+            onClick={() => setIsDetailsOpen((prev) => !prev)}
+            aria-expanded={isDetailsOpen}
+            aria-label={`${isDetailsOpen ? 'Hide' : 'View'} details for ${primaryAction.title}`}
           >
-            <span>View Details</span>
-            <ChevronRight size={14} aria-hidden="true" />
+            <span>{isDetailsOpen ? 'Hide Details' : 'View Details'}</span>
+            <ChevronRight
+              size={14}
+              className={`${styles.detailsIcon} ${isDetailsOpen ? styles.detailsIconOpen : ''}`}
+              aria-hidden="true"
+            />
           </button>
         </div>
+
+        {/* Expandable Clinical Protocol Details */}
+        {isDetailsOpen && (
+          <div className={styles.actionDetailsDrawer}>
+            <div className={styles.detailsHeader}>
+              <strong>Clinical Protocol & Preparation Checklist</strong>
+              <span className={styles.orderNumber}>Requisition ID: CW-8910</span>
+            </div>
+
+            <div className={styles.detailsGrid}>
+              <div className={styles.detailBlock}>
+                <span className={styles.detailLabel}>Tests Included</span>
+                <p className={styles.detailText}>
+                  Complete Blood Count (CBC with diff), Comprehensive Metabolic Panel (CMP), and Liver Function Panel (LFT).
+                </p>
+              </div>
+
+              <div className={styles.detailBlock}>
+                <span className={styles.detailLabel}>Facility & Timing</span>
+                <p className={styles.detailText}>
+                  Metro Central Laboratory · Suite 102 · Target: Tomorrow at 9:00 AM (Arrive 15 mins early).
+                </p>
+              </div>
+
+              <div className={styles.detailBlock}>
+                <span className={styles.detailLabel}>Patient Fasting Protocol</span>
+                <p className={styles.detailText}>
+                  8-hour overnight fasting required for accurate glycemic and metabolic values. Water permitted.
+                </p>
+              </div>
+
+              <div className={styles.detailBlock}>
+                <span className={styles.detailLabel}>Clinical Urgency</span>
+                <p className={styles.detailText}>
+                  Mandatory 48-hour pre-chemotherapy safety clearance for Cycle 4 AC-T infusion on Sep 22.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 1–2 Very Compact Upcoming Items */}

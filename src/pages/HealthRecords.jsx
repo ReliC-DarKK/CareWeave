@@ -1,12 +1,92 @@
 import React, { useState } from 'react';
-import { FlaskConical, FileText, ChevronDown, ChevronUp, CheckCircle, ExternalLink } from 'lucide-react';
-import { DEMO_HEALTH_RECORDS_DATA } from '../data/mockData';
+import { Link } from 'react-router-dom';
+import {
+  FlaskConical,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle,
+  UploadCloud,
+  FileUp,
+  X,
+  ArrowRight,
+  Pill,
+  CheckCircle2,
+} from 'lucide-react';
+import { useCareData } from '../context/CareDataContext';
 import styles from './HealthRecords.module.css';
 
+const PRESET_DOCUMENTS = [
+  {
+    id: 'preset-statin',
+    title: 'Cardiology Follow-up & Statin Prescription',
+    type: 'Cardiology Consult',
+    author: 'Dr. Singh (Cardiology)',
+    description: 'Post-telemetry lipid evaluation, atherosclerotic cardiovascular risk review, and statin initiation.',
+    content: 'Review of resting BP telemetry demonstrates stable mean arterial pressures (127/83 mmHg). Fasting lipid panel reveals LDL at 134 mg/dL. Initiating Atorvastatin 20mg PO once daily at bedtime for plaque stabilization and secondary cardiovascular prophylaxis. Concomitant Metformin and Amlodipine reviewed with no pharmacological interactions identified. Order routine LFT/lipid recheck in 8 weeks.',
+    extractedMedication: {
+      name: 'Atorvastatin',
+      dosage: '20 mg',
+      frequency: 'Once Daily (QHS)',
+      timing: 'Nightly at bedtime (10:00 PM) with water',
+      condition: 'Cardiovascular Risk / Hyperlipidemia',
+      prescriber: 'Dr. Singh',
+      refillsRemaining: 3,
+      nextRefill: 'Oct 18, 2026',
+      status: 'Active Regimen',
+    },
+  },
+  {
+    id: 'preset-pantoprazole',
+    title: 'Gastroenterology Consultation Note',
+    type: 'GI Specialty Summary',
+    author: 'Dr. Alva (Gastroenterology)',
+    description: 'Upper GI evaluation for steroid-associated dyspepsia and mucosal protection.',
+    content: 'Evaluated patient for transient epigastric discomfort correlated with chemotherapy Dexamethasone pre-medication days. Prescribed Pantoprazole 40mg PO daily 30 minutes before breakfast to prevent steroid-induced gastric mucosal irritation. Monitored for drug absorption interactions with Metformin.',
+    extractedMedication: {
+      name: 'Pantoprazole',
+      dosage: '40 mg',
+      frequency: 'Once Daily',
+      timing: 'Morning, 30 minutes before breakfast',
+      condition: 'GI Mucosal Protection / Acid Reflux',
+      prescriber: 'Dr. Alva',
+      refillsRemaining: 2,
+      nextRefill: 'Oct 20, 2026',
+      status: 'Active Regimen',
+    },
+  },
+  {
+    id: 'preset-empagliflozin',
+    title: 'Endocrine Co-Management Protocol',
+    type: 'Endocrine Plan',
+    author: 'Dr. Rao (Endocrinology)',
+    description: 'Dual-agent glycemic control protocol adding SGLT2 inhibitor to existing Metformin.',
+    content: 'Quarterly review indicated HbA1c at 7.2% with intermittent steroid-induced glycemic excursions up to 158 mg/dL. Adding Empagliflozin 10mg PO once daily in morning. Instructed patient on hydration and daily home capillary glucose monitoring. Coordinated with Dr. Kapoor for chemotherapy cycle compatibility.',
+    extractedMedication: {
+      name: 'Empagliflozin',
+      dosage: '10 mg',
+      frequency: 'Once Daily',
+      timing: 'Morning with or without food',
+      condition: 'Type 2 Diabetes Glycemic Control',
+      prescriber: 'Dr. Rao',
+      refillsRemaining: 3,
+      nextRefill: 'Nov 01, 2026',
+      status: 'Active Regimen',
+    },
+  },
+];
+
 export function HealthRecords() {
-  const { recentLabReports, healthDocuments } = DEMO_HEALTH_RECORDS_DATA;
+  const { healthRecords, addUploadedRecordAndMedication } = useCareData();
+  const { recentLabReports, healthDocuments } = healthRecords;
+
   const [expandedLab, setExpandedLab] = useState('lab-01'); // CBC open by default
   const [expandedDoc, setExpandedDoc] = useState('doc-01'); // Oncology open by default
+
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedPresetId, setSelectedPresetId] = useState('preset-statin');
+  const [customFileName, setCustomFileName] = useState('');
+  const [uploadSuccessInfo, setUploadSuccessInfo] = useState(null);
 
   const toggleLab = (id) => {
     setExpandedLab((prev) => (prev === id ? null : id));
@@ -16,19 +96,125 @@ export function HealthRecords() {
     setExpandedDoc((prev) => (prev === id ? null : id));
   };
 
+  const currentPreset =
+    PRESET_DOCUMENTS.find((p) => p.id === selectedPresetId) || PRESET_DOCUMENTS[0];
+
+  const activeDocDetails =
+    selectedPresetId === 'custom' && customFileName
+      ? {
+          title: customFileName.replace(/\.[^/.]+$/, '') || 'Uploaded Clinical Document',
+          type: 'External Health Document',
+          author: 'Attending Physician',
+          description: `Uploaded health record document: ${customFileName}. Reconciled clinical prescriptions.`,
+          content: `Document processed: ${customFileName}. Extracted prescription verified against multi-condition care plan. Cross-specialty clearance indicated for current longitudinal regimen.`,
+          extractedMedication: {
+            name: 'Atorvastatin',
+            dosage: '20 mg',
+            frequency: 'Once Daily (QHS)',
+            timing: 'Nightly at bedtime (10:00 PM)',
+            condition: 'Cardiovascular Risk / Hyperlipidemia',
+            prescriber: 'Dr. Singh (Cardiology)',
+            refillsRemaining: 3,
+            nextRefill: 'Oct 18, 2026',
+            status: 'Active Regimen',
+          },
+        }
+      : currentPreset;
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCustomFileName(file.name);
+      setSelectedPresetId('custom');
+    }
+  };
+
+  const handleConfirmUpload = () => {
+    const docId = `doc-upload-${Date.now()}`;
+    const medId = `med-upload-${Date.now()}`;
+
+    const newDoc = {
+      id: docId,
+      title: activeDocDetails.title,
+      date: 'Today, Sep 18, 2026',
+      type: activeDocDetails.type,
+      author: activeDocDetails.author,
+      description: activeDocDetails.description,
+      content: activeDocDetails.content,
+      isUploaded: true,
+      extractedMedication: `${activeDocDetails.extractedMedication.name} ${activeDocDetails.extractedMedication.dosage}`,
+    };
+
+    const newMed = {
+      id: medId,
+      name: activeDocDetails.extractedMedication.name,
+      dosage: activeDocDetails.extractedMedication.dosage,
+      frequency: activeDocDetails.extractedMedication.frequency,
+      timing: activeDocDetails.extractedMedication.timing,
+      condition: activeDocDetails.extractedMedication.condition,
+      prescriber: activeDocDetails.extractedMedication.prescriber,
+      refillsRemaining: activeDocDetails.extractedMedication.refillsRemaining,
+      nextRefill: activeDocDetails.extractedMedication.nextRefill,
+      status: activeDocDetails.extractedMedication.status,
+      isUploaded: true,
+      sourceDocument: activeDocDetails.title,
+    };
+
+    addUploadedRecordAndMedication(newDoc, newMed);
+    setUploadSuccessInfo({
+      docTitle: newDoc.title,
+      medName: newMed.name,
+      medDosage: newMed.dosage,
+    });
+    setExpandedDoc(docId); // Automatically expand the new document
+    setIsUploadModalOpen(false);
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.pageHeader}>
         <div className={styles.headerTitleRow}>
-          <div className={styles.visualAnchor} aria-hidden="true" />
-          <div>
-            <h1 className={styles.pageTitle}>Health Records & Diagnostics</h1>
-            <p className={styles.pageSubtitle}>
-              Recent laboratory panels, metabolic reports, histology documents, and clinical summaries
-            </p>
+          <div className={styles.headerLeft}>
+            <div className={styles.visualAnchor} aria-hidden="true" />
+            <div>
+              <h1 className={styles.pageTitle}>Health Records & Diagnostics</h1>
+              <p className={styles.pageSubtitle}>
+                Recent laboratory panels, metabolic reports, histology documents, and clinical summaries
+              </p>
+            </div>
           </div>
+
+          <button
+            type="button"
+            className={styles.uploadTriggerBtn}
+            onClick={() => setIsUploadModalOpen(true)}
+            id="upload-health-record-btn"
+          >
+            <UploadCloud size={16} aria-hidden="true" />
+            <span>Upload Document</span>
+          </button>
         </div>
       </header>
+
+      {/* Success Notification Banner */}
+      {uploadSuccessInfo && (
+        <div className={styles.successBanner} role="status" aria-live="polite">
+          <div className={styles.successBannerContent}>
+            <CheckCircle size={18} className={styles.successIcon} aria-hidden="true" />
+            <div>
+              <strong>Record Processed & Reconciled:</strong> "{uploadSuccessInfo.docTitle}" was added to Health Documents. Extracted medication{' '}
+              <strong>
+                {uploadSuccessInfo.medName} ({uploadSuccessInfo.medDosage})
+              </strong>{' '}
+              has been added directly to your Medications section.
+            </div>
+          </div>
+          <Link to="/medications" className={styles.viewInMedsLink}>
+            <span>View in Medications</span>
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </div>
+      )}
 
       {/* Section 1: Recent Lab Reports */}
       <section className={styles.sectionBlock} aria-labelledby="lab-reports-heading">
@@ -157,6 +343,11 @@ export function HealthRecords() {
                     <div className={styles.titleRow}>
                       <h3 className={styles.recordTitle}>{doc.title}</h3>
                       <span className={styles.typeBadgeBlue}>{doc.type}</span>
+                      {doc.extractedMedication && (
+                        <span className={styles.extractedMedBadge}>
+                          Medication Extracted: {doc.extractedMedication}
+                        </span>
+                      )}
                     </div>
 
                     <p className={styles.recordDesc}>{doc.description}</p>
@@ -203,6 +394,138 @@ export function HealthRecords() {
           })}
         </div>
       </section>
+
+      {/* Upload Health Record Modal */}
+      {isUploadModalOpen && (
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="upload-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsUploadModalOpen(false);
+          }}
+        >
+          <div className={styles.modalCard}>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitleGroup}>
+                <div className={styles.modalIconBox}>
+                  <FileUp size={18} aria-hidden="true" />
+                </div>
+                <h3 id="upload-modal-title" className={styles.modalTitle}>
+                  Upload Health Record
+                </h3>
+              </div>
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => setIsUploadModalOpen(false)}
+                aria-label="Close upload dialog"
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              {/* File Dropzone */}
+              <div className={styles.fileDropzone}>
+                <input
+                  type="file"
+                  className={styles.fileInputHidden}
+                  onChange={handleFileUpload}
+                  accept=".pdf,.txt,.doc,.docx,image/*"
+                  id="health-record-file-input"
+                />
+                <UploadCloud size={28} color="var(--color-accent-primary)" aria-hidden="true" />
+                <p className={styles.dropzoneText}>
+                  {customFileName ? (
+                    <>
+                      Selected: <strong>{customFileName}</strong>
+                    </>
+                  ) : (
+                    <>
+                      <strong>Click to browse</strong> or drag and drop your clinical document
+                    </>
+                  )}
+                </p>
+                <span style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)' }}>
+                  Supports PDF, scanned clinical notes, or lab requisitions
+                </span>
+              </div>
+
+              {/* Sample Preset Selector */}
+              <div className={styles.formGroup}>
+                <label htmlFor="record-preset-select" className={styles.inputLabel}>
+                  Or Select Clinical Document Sample:
+                </label>
+                <select
+                  id="record-preset-select"
+                  className={styles.presetSelect}
+                  value={selectedPresetId}
+                  onChange={(e) => {
+                    setSelectedPresetId(e.target.value);
+                    setCustomFileName('');
+                  }}
+                >
+                  {PRESET_DOCUMENTS.map((preset) => (
+                    <option key={preset.id} value={preset.id}>
+                      {preset.title} ({preset.extractedMedication.name} {preset.extractedMedication.dosage})
+                    </option>
+                  ))}
+                  {customFileName && <option value="custom">Uploaded File: {customFileName}</option>}
+                </select>
+              </div>
+
+              {/* Extracted Medication Detected Section */}
+              <div className={styles.extractedSection}>
+                <div className={styles.extractedHeader}>
+                  <Pill size={15} aria-hidden="true" />
+                  <span>Detected Medication in Document:</span>
+                </div>
+
+                <div className={styles.extractedPillCard}>
+                  <div className={styles.extractedMedName}>
+                    {activeDocDetails.extractedMedication.name}{' '}
+                    <span style={{ color: 'var(--color-accent-primary)', fontWeight: 600 }}>
+                      {activeDocDetails.extractedMedication.dosage}
+                    </span>
+                  </div>
+                  <div className={styles.extractedMedMeta}>
+                    <span>Frequency: {activeDocDetails.extractedMedication.frequency}</span> •{' '}
+                    <span>Prescriber: {activeDocDetails.extractedMedication.prescriber}</span>
+                  </div>
+                  <div className={styles.extractedMedMeta}>
+                    <span>Timing: {activeDocDetails.extractedMedication.timing}</span>
+                  </div>
+                </div>
+
+                <p className={styles.extractedSyncNotice}>
+                  ✓ This medication will be parsed directly from the document and added to your "Medications" section.
+                </p>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                className={styles.cancelModalBtn}
+                onClick={() => setIsUploadModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={styles.confirmModalBtn}
+                onClick={handleConfirmUpload}
+                id="confirm-upload-btn"
+              >
+                <CheckCircle2 size={14} aria-hidden="true" />
+                <span>Upload & Add Medication</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

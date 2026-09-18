@@ -21,7 +21,12 @@ export function CareTeamPage() {
         </div>
       </header>
 
-      {/* P4 Feature: Smart Handoff Clinical Workflow */}
+      {/* 1. Full Multidisciplinary Care Team Roster & Direct Contacts */}
+      <div className={styles.teamSection}>
+        <CareTeam members={DEMO_CARE_TEAM} />
+      </div>
+
+      {/* 2. Smart Handoff Inter-Specialty Clinical Summary */}
       <section className={styles.handoffSection} aria-labelledby="smart-handoff-title">
         <div className={styles.handoffHeader}>
           <div className={styles.handoffTitleGroup}>
@@ -97,11 +102,6 @@ export function CareTeamPage() {
           <span>Facilitated & Verified by: <strong>{handoff.coordinatorSigned}</strong></span>
         </footer>
       </section>
-
-      {/* Full Multidisciplinary Care Team Roster */}
-      <div className={styles.teamSection}>
-        <CareTeam members={DEMO_CARE_TEAM} />
-      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import styles from './CareTeam.module.css';
 
 export function CareTeam({ members }) {
@@ -36,14 +36,25 @@ export function CareTeam({ members }) {
 
             <div className={styles.providerSide}>
               <span className={styles.availabilityText}>{member.availability}</span>
-              <a
-                href={`mailto:${member.contactEmail}`}
-                className={styles.contactAction}
-                title={`Message ${member.name}`}
-              >
-                <Mail size={12} aria-hidden="true" />
-                <span>Contact Clinician</span>
-              </a>
+              <div className={styles.contactButtonsRow}>
+                <a
+                  href={`tel:${(member.phone || '+15552348900').replace(/[^0-9+]/g, '')}`}
+                  className={styles.phoneAction}
+                  title={`Call ${member.name}`}
+                  aria-label={`Call ${member.name} at ${member.phone}`}
+                >
+                  <Phone size={12} aria-hidden="true" />
+                  <span>Call {member.phone}</span>
+                </a>
+                <a
+                  href={`mailto:${member.contactEmail}`}
+                  className={styles.contactAction}
+                  title={`Message ${member.name}`}
+                >
+                  <Mail size={12} aria-hidden="true" />
+                  <span>Email</span>
+                </a>
+              </div>
             </div>
           </div>
         ))}
