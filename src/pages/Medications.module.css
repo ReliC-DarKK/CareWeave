@@ -1,0 +1,203 @@
+.container {
+  padding: var(--space-2xl) var(--space-3xl);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+}
+
+.visualAnchor {
+  width: 3px;
+  background-color: var(--color-accent-primary);
+  border-radius: 1px;
+}
+
+.pageTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.medicationsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.medCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-left: 3px solid var(--tint-indigo-accent);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  padding: var(--space-md) var(--space-xl);
+  transition: border-color 0.15s ease;
+}
+
+.medCard:hover {
+  border-color: var(--color-border-medium);
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.medHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.nameGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.medIconBox {
+  width: 32px;
+  height: 32px;
+  background-color: var(--tint-indigo-bg);
+  color: var(--tint-indigo-accent);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.medName {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.medDosage {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent-primary);
+}
+
+.conditionRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+}
+
+.frequencyTag {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.bulletSeparator {
+  color: var(--color-border-medium);
+}
+
+.conditionText {
+  color: var(--color-text-secondary);
+}
+
+.statusBadge {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+}
+
+.statusActive {
+  background-color: var(--tint-teal-bg);
+  color: var(--tint-teal-text);
+  border: 1px solid var(--tint-teal-border);
+}
+
+.statusQueued {
+  background-color: var(--color-clinical-amber-bg);
+  color: var(--color-clinical-amber);
+  border: 1px solid var(--color-clinical-amber-border);
+}
+
+.timingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-xs);
+}
+
+.metaIcon {
+  color: var(--color-accent-primary);
+  flex-shrink: 0;
+}
+
+.timingLabel {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.3px;
+}
+
+.timingValue {
+  color: var(--color-text-primary);
+}
+
+.medFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.prescriberInfo, .refillInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.refillInfo strong {
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: var(--space-xl);
+  }
+}

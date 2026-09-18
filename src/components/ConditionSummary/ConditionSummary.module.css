@@ -1,177 +1,102 @@
-.card {
+.compactBlock {
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-subtle);
-  padding: var(--space-lg);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  position: relative;
-  transition: border-color 0.15s ease;
-}
-
-.card:hover {
-  border-color: var(--color-border-medium);
-}
-
-.header {
-  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  gap: var(--space-sm);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
-.titleArea {
+/* Subtle Condition Visual Identity Tints */
+.themeRose {
+  border-top: 3px solid var(--tint-rose-accent);
+}
+.themeRose .iconBox {
+  background-color: var(--tint-rose-bg);
+  border: 1px solid var(--tint-rose-border);
+  color: var(--tint-rose-accent);
+}
+
+.themeBlue {
+  border-top: 3px solid var(--tint-blue-accent);
+}
+.themeBlue .iconBox {
+  background-color: var(--tint-blue-bg);
+  border: 1px solid var(--tint-blue-border);
+  color: var(--tint-blue-accent);
+}
+
+.themeTeal {
+  border-top: 3px solid var(--tint-teal-accent);
+}
+.themeTeal .iconBox {
+  background-color: var(--tint-teal-bg);
+  border: 1px solid var(--tint-teal-border);
+  color: var(--tint-teal-accent);
+}
+
+.blockHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.iconBox {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nameGroup {
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
-.categoryLabel {
-  font-size: var(--font-size-2xs);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-accent-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.name {
-  font-size: var(--font-size-lg);
+.conditionTitle {
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   line-height: 1.25;
 }
 
-.clinicalName {
-  font-size: var(--font-size-xs);
+.stageNote {
+  font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
-  font-style: normal;
 }
 
-.statusRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-xs) 0;
-  border-top: 1px solid var(--color-border-subtle);
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.statusMeta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
+.clinicalContext {
   font-size: var(--font-size-xs);
-}
-
-.stageText {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-}
-
-.bulletSeparator {
-  color: var(--color-border-medium);
-}
-
-.statusText {
-  color: var(--color-clinical-slate);
-  font-weight: var(--font-weight-medium);
-}
-
-.summaryText {
-  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  line-height: 1.5;
+  line-height: 1.45;
   flex-grow: 1;
 }
 
-.markersContainer {
-  background-color: var(--color-bg-surface-subtle);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-  padding: var(--space-sm) var(--space-md);
+.milestoneRow {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: var(--space-xs);
-}
-
-.markersHeading {
-  font-size: var(--font-size-2xs);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.markersGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-sm);
-}
-
-.markerItem {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.markerLabel {
-  font-size: var(--font-size-2xs);
-  color: var(--color-text-muted);
-}
-
-.markerValue {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  font-variant-numeric: tabular-nums;
-}
-
-.markerStatus {
-  font-size: var(--font-size-2xs);
-  color: var(--color-text-secondary);
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding-top: var(--space-sm);
+  padding-top: var(--space-xs);
   border-top: 1px solid var(--color-border-subtle);
-  margin-top: auto;
-}
-
-.metaRow, .milestoneRow {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-xs);
-}
-
-.metaIcon {
+  font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
-  margin-top: 2px;
+}
+
+.milestoneIcon {
+  color: var(--color-accent-primary);
   flex-shrink: 0;
 }
 
-.metaText {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  line-height: 1.35;
-}
-
-.metaText strong {
-  color: var(--color-text-primary);
-  font-weight: var(--font-weight-semibold);
-}
-
 .milestoneText {
-  font-size: var(--font-size-xs);
   color: var(--color-text-primary);
-  line-height: 1.35;
-}
-
-.milestonePrefix {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-accent-primary);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

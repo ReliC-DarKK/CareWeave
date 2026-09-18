@@ -2,21 +2,14 @@
   background-color: var(--color-bg-surface);
   border-bottom: 1px solid var(--color-border-subtle);
   padding: var(--space-xl) var(--space-3xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
 }
 
-.greetingSection {
+.headerInner {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
-}
-
-.titleRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-xs);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .greeting {
@@ -24,58 +17,27 @@
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   letter-spacing: -0.3px;
-}
-
-.demoTag {
-  font-size: var(--font-size-2xs);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-muted);
-  background-color: var(--color-bg-muted);
-  border: 1px solid var(--color-border-subtle);
-  padding: 2px 8px;
-  border-radius: var(--radius-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
 .subtitle {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
-  max-width: 780px;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
-.clinicalContextSection {
+.metaRow {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-md);
-  padding-top: var(--space-sm);
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.contextItem {
-  display: flex;
-  align-items: center;
   gap: var(--space-xs);
-}
-
-.contextIcon {
-  color: var(--color-accent-primary);
-  opacity: 0.8;
-  flex-shrink: 0;
-}
-
-.contextText {
   font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  margin-top: 2px;
 }
 
-.divider {
-  width: 1px;
-  height: 14px;
-  background-color: var(--color-border-subtle);
+.dotSeparator {
+  color: var(--color-border-medium);
 }
 
 @media (max-width: 1024px) {

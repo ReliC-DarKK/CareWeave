@@ -1,70 +1,71 @@
 import React from 'react';
-import { Layers, CheckCircle2, Clock } from 'lucide-react';
 import styles from './CareState.module.css';
 
 export function CareState({ careState }) {
+  const status = careState?.status || "Stable";
+  const supportingText = careState?.supportingText || "3 primary conditions co-managed across care";
+  const lastUpdated = careState?.lastUpdated || "Today, 08:30 AM";
+
   return (
-    <section className={styles.section} aria-labelledby="care-state-heading">
-      <div className={styles.card}>
-        <div className={styles.primaryColumn}>
-          <div className={styles.header}>
-            <div className={styles.headerIcon}>
-              <Layers size={18} aria-hidden="true" />
-            </div>
-            <div>
-              <h2 id="care-state-heading" className={styles.title}>
-                Overall Care Coordination State
-              </h2>
-              <p className={styles.subtitle}>
-                Multidisciplinary alignment & cross-condition synchronization
-              </p>
-            </div>
-          </div>
+    <section className={styles.careStateCard} aria-labelledby="care-state-title">
+      <div className={styles.cardHeader}>
+        <div className={styles.visualAnchor} aria-hidden="true" />
+        <h3 id="care-state-title" className={styles.cardTitle}>Overall Care State</h3>
+      </div>
 
-          <div className={styles.statusDisplay}>
-            <div className={styles.statusBadge}>
-              <CheckCircle2 size={16} className={styles.statusIcon} aria-hidden="true" />
-              <span className={styles.statusText}>{careState.statusLabel}</span>
-            </div>
-            <p className={styles.statusDescription}>{careState.statusDescription}</p>
-          </div>
+      <div className={styles.meterWrapper}>
+        <div className={styles.meterContainer}>
+          <svg
+            className={styles.meterSvg}
+            viewBox="0 0 200 115"
+            width="200"
+            height="115"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="careStateArcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#3B497A" />
+                <stop offset="50%" stopColor="#2563EB" />
+                <stop offset="100%" stopColor="#0F766E" />
+              </linearGradient>
+            </defs>
 
-          <div className={styles.alignmentBox}>
-            <span className={styles.alignmentLabel}>Cross-Condition Alignment</span>
-            <p className={styles.alignmentText}>{careState.careAlignmentNote}</p>
-          </div>
-        </div>
+            {/* Inactive Background Arc Track */}
+            <path
+              d="M 25 105 A 75 75 0 0 1 175 105"
+              fill="none"
+              stroke="#E2E8F0"
+              strokeWidth="8"
+              strokeLinecap="round"
+            />
 
-        <div className={styles.metricsColumn}>
-          <div className={styles.metricsGrid}>
-            <div className={styles.metricCard}>
-              <span className={styles.metricValue}>{careState.activeConditionsCount}</span>
-              <span className={styles.metricLabel}>Conditions Co-Managed</span>
-            </div>
+            {/* Restrained Indigo/Blue/Teal Active Arc Progression */}
+            <path
+              d="M 25 105 A 75 75 0 0 1 175 105"
+              fill="none"
+              stroke="url(#careStateArcGradient)"
+              strokeWidth="8"
+              strokeLinecap="round"
+              strokeDasharray="235.6"
+              strokeDashoffset="35"
+            />
+          </svg>
 
-            <div className={styles.metricCard}>
-              <span className={styles.metricValue}>{careState.activePrescriptionsCount}</span>
-              <span className={styles.metricLabel}>Active Regimens</span>
-            </div>
-
-            <div className={styles.metricCard}>
-              <span className={styles.metricValue}>{careState.upcomingEventsCount}</span>
-              <span className={styles.metricLabel}>Encounters in 14 Days</span>
-            </div>
-
-            <div className={styles.metricCard}>
-              <span className={styles.metricValue}>{careState.attentionItemsCount}</span>
-              <span className={styles.metricLabel}>Coordinated Action Items</span>
-            </div>
-          </div>
-
-          <div className={styles.syncFooter}>
-            <Clock size={12} className={styles.syncIcon} aria-hidden="true" />
-            <span className={styles.syncText}>
-              State verified: {careState.lastUpdated} • {careState.synchronizationStatus}
-            </span>
+          {/* Prominent Center Value inside the Arc */}
+          <div className={styles.meterCenterContent}>
+            <span className={styles.meterValue}>{status}</span>
           </div>
         </div>
+
+        {/* Small supporting line below */}
+        <div className={styles.supportingBlock}>
+          <p className={styles.supportingLinePrimary}>3 primary conditions</p>
+          <p className={styles.supportingLineSecondary}>co-managed across care</p>
+        </div>
+      </div>
+
+      <div className={styles.metaRow}>
+        <span>Verified: {lastUpdated}</span>
       </div>
     </section>
   );

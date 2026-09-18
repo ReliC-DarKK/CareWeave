@@ -1,31 +1,24 @@
 .section {
-  background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-subtle);
-  padding: var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-border-subtle);
+  align-items: stretch;
+  gap: var(--space-md);
+  padding-bottom: var(--space-xs);
 }
 
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.headerIcon {
-  color: var(--color-clinical-amber);
-  flex-shrink: 0;
+.visualAnchor {
+  width: var(--section-anchor-width);
+  background-color: var(--section-anchor-color);
+  border-radius: 1px;
 }
 
 .title {
@@ -38,16 +31,17 @@
 .subtitle {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  margin-top: 1px;
 }
 
 .gapsList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
 
 .gapCard {
-  background-color: var(--color-bg-surface-subtle);
+  background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border-subtle);
   border-left: 3px solid var(--color-clinical-amber);
   border-radius: var(--radius-sm);
@@ -74,7 +68,33 @@
 
 .conditionContext {
   font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+}
+
+.tagRose {
+  background-color: var(--tint-rose-bg);
+  color: var(--tint-rose-text);
+  border: 1px solid var(--tint-rose-border);
+}
+
+.tagBlue {
+  background-color: var(--tint-blue-bg);
+  color: var(--tint-blue-text);
+  border: 1px solid var(--tint-blue-border);
+}
+
+.tagTeal {
+  background-color: var(--tint-teal-bg);
+  color: var(--tint-teal-text);
+  border: 1px solid var(--tint-teal-border);
+}
+
+.tagNeutral {
+  background-color: var(--color-bg-surface-subtle);
   color: var(--color-text-muted);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .gapTitle {
@@ -98,5 +118,4 @@
   font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   line-height: 1.4;
-  margin-top: 2px;
 }

@@ -1,31 +1,24 @@
 .section {
-  background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-subtle);
-  padding: var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-border-subtle);
+  align-items: stretch;
+  gap: var(--space-md);
+  padding-bottom: var(--space-xs);
 }
 
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.headerIcon {
-  color: var(--color-accent-primary);
-  flex-shrink: 0;
+.visualAnchor {
+  width: var(--section-anchor-width);
+  background-color: var(--section-anchor-color);
+  border-radius: 1px;
 }
 
 .title {
@@ -38,62 +31,63 @@
 .subtitle {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  margin-top: 1px;
 }
 
-.linksGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-sm);
-}
-
-.linkCard {
-  background-color: var(--color-bg-surface-subtle);
+.linksList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background-color: var(--color-border-subtle);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.linkRow {
+  background-color: var(--color-bg-surface);
   padding: var(--space-sm) var(--space-md);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  transition: all 0.15s ease;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
 }
 
-.linkCard:hover {
-  background-color: var(--color-bg-surface);
-  border-color: var(--color-accent-border);
-  box-shadow: var(--shadow-subtle);
+.linkRow:hover {
+  background-color: var(--color-bg-surface-subtle);
 }
 
-.linkBody {
+.linkTextGroup {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .linkTitle {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  color: var(--color-accent-primary);
+}
+
+.linkRow:hover .linkTitle {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
 }
 
 .linkDescription {
   font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
-  line-height: 1.35;
 }
 
-.linkIcon {
+.linkArrow {
   color: var(--color-text-muted);
   flex-shrink: 0;
-  transition: color 0.15s ease;
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.linkCard:hover .linkIcon {
+.linkRow:hover .linkArrow {
   color: var(--color-accent-primary);
-}
-
-@media (max-width: 1024px) {
-  .linksGrid {
-    grid-template-columns: 1fr;
-  }
+  transform: translateX(2px);
 }

@@ -1,0 +1,319 @@
+.container {
+  padding: var(--space-2xl) var(--space-3xl);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+}
+
+.visualAnchor {
+  width: 3px;
+  background-color: var(--color-accent-primary);
+  border-radius: 1px;
+}
+
+.pageTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.upcomingIcon {
+  color: var(--color-accent-primary);
+}
+
+.pastIcon {
+  color: var(--color-text-muted);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.sectionSubtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.appointmentsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.appointmentCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-left: 3px solid var(--color-accent-primary);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  padding: var(--space-md) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: border-color 0.15s ease;
+}
+
+.appointmentCard:hover {
+  border-color: var(--color-border-medium);
+}
+
+.pastCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  opacity: 0.9;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  flex-grow: 1;
+}
+
+.dateBadge {
+  width: 90px;
+  background-color: var(--tint-blue-bg);
+  border: 1px solid var(--tint-blue-border);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.dateBadgePast {
+  width: 90px;
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.dateDay {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.dateTime {
+  font-size: var(--font-size-2xs);
+  color: var(--color-accent-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-top: 2px;
+}
+
+.dateBadgePast .dateTime {
+  color: var(--color-text-muted);
+}
+
+.titleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  flex-grow: 1;
+}
+
+.specialtyRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.specialtyTag {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.statusConfirmed {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-clinical-teal);
+  background-color: var(--tint-teal-bg);
+  border: 1px solid var(--tint-teal-border);
+  padding: 1px 7px;
+  border-radius: var(--radius-xs);
+}
+
+.statusCompleted {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  padding: 1px 7px;
+  border-radius: var(--radius-xs);
+}
+
+.appointmentTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bulletSeparator {
+  color: var(--color-border-medium);
+}
+
+/* Preparation Area */
+.prepContainer {
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.prepHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.prepIcon {
+  color: var(--color-accent-primary);
+}
+
+.prepTitle {
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.prepList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.prepItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.prepBullet {
+  color: var(--color-accent-primary);
+  font-weight: bold;
+}
+
+/* Past Appointment Summary */
+.pastSummaryBox {
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-xs);
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.summaryLabel {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.summaryText {
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: var(--space-xl);
+  }
+}

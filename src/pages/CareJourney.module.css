@@ -1,0 +1,264 @@
+.container {
+  padding: var(--space-2xl) var(--space-3xl);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+}
+
+.visualAnchor {
+  width: 3px;
+  background-color: var(--color-accent-primary);
+  border-radius: 1px;
+}
+
+.pageTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Multi-Condition Interaction Section */
+.interactionSection {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-lg) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.sectionIcon {
+  color: var(--color-accent-primary);
+}
+
+.sectionHeading {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.1px;
+}
+
+.interactionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.interactionCard {
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-left: 3px solid var(--color-accent-primary);
+  border-radius: var(--radius-xs);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.interactionTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.interactionType {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.interactionStatus {
+  font-size: var(--font-size-2xs);
+  color: var(--color-clinical-teal);
+  font-weight: var(--font-weight-medium);
+}
+
+.interactionTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.interactionSummary {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.protocolBox {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xs) var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.protocolLabel {
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.protocolText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.interactionFooter {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+/* Filter / Navigation Row (Restrained Tabs) */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 0;
+  margin-top: var(--space-xs);
+}
+
+.filterTab {
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-xs) var(--space-md);
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+}
+
+.filterTab:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-surface-subtle);
+}
+
+.filterTabActive {
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  border-bottom-color: var(--color-accent-primary);
+  background-color: var(--color-bg-surface);
+}
+
+/* Timeline Section */
+.timelineSection {
+  width: 100%;
+}
+
+.timelineStream {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Gaps Section */
+.gapsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.gapsIcon {
+  color: var(--color-clinical-amber);
+}
+
+.gapsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.gapCard {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-left: 3px solid var(--color-clinical-amber);
+  border-radius: var(--radius-xs);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gapTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gapBadge {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-clinical-amber);
+  text-transform: uppercase;
+}
+
+.gapCondition {
+  font-size: var(--font-size-2xs);
+  color: var(--color-text-muted);
+}
+
+.gapTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.gapNote, .gapRec {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: var(--space-xl);
+  }
+
+  .interactionGrid, .gapsGrid {
+    grid-template-columns: 1fr;
+  }
+}

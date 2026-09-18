@@ -4,43 +4,35 @@
   min-height: 100%;
 }
 
-.bodyContent {
+.contentContainer {
   padding: var(--space-2xl) var(--space-3xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl);
-  max-width: 1600px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
 
-.dashboardGrid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: var(--space-2xl);
-  align-items: flex-start;
+/* Row 1: Your Care at a Glance (Unified Section) */
+.topRow {
+  width: 100%;
 }
 
-.primaryColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xl);
+/* Row 2: What Matters Now (Main Focal Point) */
+.focalSection {
+  width: 100%;
 }
 
-.secondaryColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xl);
+/* Row 3: Short Care Journey Preview */
+.journeySection {
+  width: 100%;
+  padding-top: var(--space-xs);
 }
 
-@media (max-width: 1180px) {
-  .bodyContent {
+@media (max-width: 1024px) {
+  .contentContainer {
     padding: var(--space-xl);
-    gap: var(--space-xl);
-  }
-
-  .dashboardGrid {
-    grid-template-columns: 1fr;
     gap: var(--space-xl);
   }
 }

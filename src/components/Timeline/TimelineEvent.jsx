@@ -1,59 +1,79 @@
 import React from 'react';
-import { Stethoscope, Pill, FlaskConical, Activity, CalendarCheck } from 'lucide-react';
 import styles from './Timeline.module.css';
 
-function getCategoryIcon(category) {
+function getEventCategoryTheme(category) {
   switch (category) {
     case 'Vitals & Biometrics':
-      return Activity;
+      return {
+        themeClass: styles.eventTeal,
+        badgeClass: styles.badgeTeal,
+      };
     case 'Medication Adherence':
-      return Pill;
+      return {
+        themeClass: styles.eventIndigo,
+        badgeClass: styles.badgeIndigo,
+      };
     case 'Diagnostic Lab':
-      return FlaskConical;
+      return {
+        themeClass: styles.eventViolet,
+        badgeClass: styles.badgeViolet,
+      };
     case 'Clinical Encounter':
-      return Stethoscope;
     default:
-      return CalendarCheck;
+      return {
+        themeClass: styles.eventBlue,
+        badgeClass: styles.badgeBlue,
+      };
   }
 }
 
 export function TimelineEvent({ event, isLast }) {
-  const IconComponent = getCategoryIcon(event.category);
+  const { themeClass, badgeClass } = getEventCategoryTheme(event.category);
 
   return (
-    <div className={`${styles.eventItem} ${isLast ? styles.isLastEvent : ''}`}>
-      <div className={styles.timelineTrack}>
-        <div className={styles.timelineNode}>
-          <IconComponent size={14} className={styles.nodeIcon} aria-hidden="true" />
-        </div>
-        {!isLast && <div className={styles.trackLine} />}
+    <div className={`${styles.eventItem} ${themeClass} ${isLast ? styles.isLastItem : ''}`}>
+      {/* Left Date Column */}
+      <div className={styles.dateColumn}>
+        <span className={styles.dateGroupBadge}>{event.dateGroup || event.date}</span>
+        <span className={styles.eventFullDate}>{event.date}</span>
+        <span className={styles.eventTimeText}>{event.time}</span>
       </div>
 
-      <div className={styles.eventContent}>
-        <div className={styles.eventHeader}>
-          <div className={styles.dateTimeBadge}>
-            <span className={styles.eventDate}>{event.date}</span>
-            <span className={styles.eventTime}>{event.time}</span>
-          </div>
-          <span className={styles.conditionContext}>{event.relatedCondition}</span>
-        </div>
+      {/* Continuous Vertical Track & Marker */}
+      <div className={styles.trackColumn}>
+        <div className={styles.timelinePip} aria-hidden="true" />
+        {!isLast && <div className={styles.trackLine} aria-hidden="true" />}
+      </div>
 
-        <div className={styles.eventBody}>
-          <div className={styles.eventTitleRow}>
-            <h4 className={styles.eventTitle}>{event.title}</h4>
-            <span className={styles.categoryBadge}>{event.category}</span>
+      {/* Event Details Card */}
+      <div className={styles.eventDetails}>
+        <div className={styles.eventMain}>
+          <div className={styles.titleLine}>
+            <div>
+              <h4 className={styles.eventTitle}>{event.title}</h4>
+              {event.detail && (
+                <p className={styles.eventDetailLine}>{event.detail}</p>
+              )}
+            </div>
+            <div className={styles.tagsGroup}>
+              <span className={styles.conditionTag}>{event.relatedCondition}</span>
+              <span className={`${styles.categoryLabel} ${badgeClass}`}>
+                {event.category}
+              </span>
+            </div>
           </div>
 
           <p className={styles.eventSummary}>{event.summary}</p>
 
-          <div className={styles.eventFooter}>
-            <span className={styles.recordedBy}>
+          <div className={styles.eventMetaFooter}>
+            <span className={styles.sourceText}>
               <strong>Source:</strong> {event.recordedBy}
             </span>
             {event.clinicalContext && (
-              <span className={styles.clinicalContextNote}>
-                {event.clinicalContext}
-              </span>
+              <>
+                <span className={styles.footerSeparator}>•</span>
+                <span className={styles.contextText}>{event.clinicalContext}</span>
+              </>
             )}
           </div>
         </div>

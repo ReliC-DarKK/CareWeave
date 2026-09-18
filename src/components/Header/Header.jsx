@@ -1,5 +1,4 @@
 import React from 'react';
-import { CalendarDays, Building2, UserCheck } from 'lucide-react';
 import styles from './Header.module.css';
 
 export function Header({ patient, dateStr }) {
@@ -7,30 +6,17 @@ export function Header({ patient, dateStr }) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.greetingSection}>
-        <div className={styles.titleRow}>
-          <h2 className={styles.greeting}>Good morning, {patient.firstName}</h2>
-          <span className={styles.demoTag}>Demo Dataset</span>
-        </div>
+      <div className={styles.headerInner}>
+        <h2 className={styles.greeting}>Good morning, {patient.firstName}</h2>
         <p className={styles.subtitle}>
-          Consolidated longitudinal care view across your active conditions, scheduled therapies, and priority actions for today.
+          Here's your current care state and what matters most today.
         </p>
-      </div>
-
-      <div className={styles.clinicalContextSection}>
-        <div className={styles.contextItem}>
-          <CalendarDays size={15} className={styles.contextIcon} aria-hidden="true" />
-          <span className={styles.contextText}>{currentDate}</span>
-        </div>
-        <div className={styles.divider} />
-        <div className={styles.contextItem}>
-          <Building2 size={15} className={styles.contextIcon} aria-hidden="true" />
-          <span className={styles.contextText}>{patient.primaryClinic}</span>
-        </div>
-        <div className={styles.divider} />
-        <div className={styles.contextItem}>
-          <UserCheck size={15} className={styles.contextIcon} aria-hidden="true" />
-          <span className={styles.contextText}>{patient.careCoordinator}</span>
+        <div className={styles.metaRow}>
+          <span>{currentDate}</span>
+          <span className={styles.dotSeparator} aria-hidden="true">•</span>
+          <span>{patient.primaryClinic}</span>
+          <span className={styles.dotSeparator} aria-hidden="true">•</span>
+          <span>Care Coordinator: {patient.careCoordinator}</span>
         </div>
       </div>
     </header>

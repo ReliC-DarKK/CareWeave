@@ -14,12 +14,47 @@
   --color-text-subtle: #94A3B8;
 
   /* Restrained Clinical Accent: Muted Deep Indigo / Slate Navy */
-  --color-accent-primary: #314166;
-  --color-accent-hover: #232F4C;
+  --color-accent-primary: #2C3E6B;
+  --color-accent-hover: #1E2B4C;
   --color-accent-light: #EEF2F8;
   --color-accent-border: #CBD5E1;
+  --color-accent-anchor: #2C3E6B;
 
-  /* Clinical Signal Accents (used sparingly and with restrained clinical tone) */
+  /* Section Visual Anchor: Subtle 3px indigo vertical rule */
+  --section-anchor-width: 3px;
+  --section-anchor-color: #2C3E6B;
+
+  /* Muted Clinical Condition Tints (Used for Icons, Indicators & Subtle Backgrounds) */
+  /* Breast Cancer (Oncology) — Restrained Rose/Lilac Tint */
+  --tint-rose-bg: #FFF1F2;
+  --tint-rose-border: #FECDD3;
+  --tint-rose-accent: #9D174D;
+  --tint-rose-text: #831843;
+
+  /* Type 2 Diabetes (Endocrinology) — Restrained Clinical Blue Tint */
+  --tint-blue-bg: #EFF6FF;
+  --tint-blue-border: #BFDBFE;
+  --tint-blue-accent: #1D4ED8;
+  --tint-blue-text: #1E40AF;
+
+  /* Hypertension (Cardiovascular) — Restrained Clinical Teal Tint */
+  --tint-teal-bg: #F0FDFA;
+  --tint-teal-border: #99F6E4;
+  --tint-teal-accent: #0F766E;
+  --tint-teal-text: #115E59;
+
+  /* Timeline Event Category Tints (Muted, Distinct Scannability) */
+  --tint-indigo-bg: #EEF2FF;
+  --tint-indigo-border: #C7D2FE;
+  --tint-indigo-accent: #3730A3;
+  --tint-indigo-text: #312E81;
+
+  --tint-violet-bg: #F5F3FF;
+  --tint-violet-border: #DDD6FE;
+  --tint-violet-accent: #5B21B6;
+  --tint-violet-text: #4C1D95;
+
+  /* Clinical Signal Accents */
   --color-clinical-teal: #0F766E;
   --color-clinical-teal-bg: #F0FDFA;
   --color-clinical-teal-border: #CCFBF1;
@@ -65,13 +100,13 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Moderate Radii (never bubbly or excessively round) */
+  /* Moderate Radii */
   --radius-xs: 3px;
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
 
-  /* Restrained Shadows (flat, clinical, clean) */
+  /* Restrained Shadows */
   --shadow-subtle: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
   --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
   --shadow-popover: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);

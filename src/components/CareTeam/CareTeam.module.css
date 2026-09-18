@@ -1,31 +1,24 @@
 .section {
-  background-color: var(--color-bg-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-subtle);
-  padding: var(--space-xl);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-border-subtle);
+  align-items: stretch;
+  gap: var(--space-md);
+  padding-bottom: var(--space-xs);
 }
 
-.headerLeft {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.headerIcon {
-  color: var(--color-accent-primary);
-  flex-shrink: 0;
+.visualAnchor {
+  width: var(--section-anchor-width);
+  background-color: var(--section-anchor-color);
+  border-radius: 1px;
 }
 
 .title {
@@ -38,89 +31,114 @@
 .subtitle {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  margin-top: 1px;
 }
 
-.teamGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.rosterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background-color: var(--color-border-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.rosterRow {
+  background-color: var(--color-bg-surface);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: var(--space-md);
 }
 
-.memberCard {
-  background-color: var(--color-bg-surface-subtle);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
-  padding: var(--space-md);
+.providerMain {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-sm);
+  gap: 1px;
 }
 
-.memberMeta {
+.nameRoleLine {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
 
 .memberName {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
 }
 
-.memberRole {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
+.memberSpecialty {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
   color: var(--color-accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.roleTag {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+}
+
+.careRelationshipText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 2px 0 0;
+}
+
+.careRelationshipText strong {
+  color: var(--color-text-primary);
 }
 
 .memberDepartment {
   font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
-  line-height: 1.35;
 }
 
-.cardFooter {
+.providerSide {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding-top: var(--space-xs);
-  border-top: 1px solid var(--color-border-subtle);
-}
-
-.availabilityRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.footerIcon {
-  color: var(--color-text-muted);
+  align-items: flex-end;
+  gap: 2px;
   flex-shrink: 0;
 }
 
 .availabilityText {
-  font-size: var(--font-size-2xs);
+  font-size: 0.6875rem;
   color: var(--color-text-secondary);
 }
 
-.contactLink {
-  display: flex;
+.contactAction {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--font-size-2xs);
-  color: var(--color-text-muted);
+  gap: 4px;
+  font-size: 0.6875rem;
+  color: var(--color-accent-primary);
   font-family: monospace;
 }
 
-.contactLink:hover {
-  color: var(--color-accent-primary);
+.contactAction:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 1024px) {
-  .teamGrid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .rosterRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+
+  .providerSide {
+    align-items: flex-start;
   }
 }
