@@ -19,8 +19,11 @@
   },
   "homepage": "https://github.com/ReliC-DarKK/CareWeave#readme",
   "devDependencies": {
-    "@types/node": "^26.6.1",
+    "@types/node": "^26.6.2",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "pdf-parse": "^2.4.5"
   }
 }
