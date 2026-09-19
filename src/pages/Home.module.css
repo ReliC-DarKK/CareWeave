@@ -24,7 +24,22 @@
   width: 100%;
 }
 
-/* Row 3: Short Care Journey Preview */
+/* Row 3: Contextual Care Alerts & Preparation (Feature 6) */
+.alertsSection {
+  width: 100%;
+}
+
+/* Row 4: Multi-Condition Interaction Map (Feature 4) */
+.interactionSection {
+  width: 100%;
+}
+
+/* Row 4: Smart Handoff / Cross-Specialty Care Summary (Feature 5) */
+.handoffSection {
+  width: 100%;
+}
+
+/* Row 5: Short Care Journey Preview */
 .journeySection {
   width: 100%;
   padding-top: var(--space-xs);

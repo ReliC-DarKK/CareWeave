@@ -3,6 +3,9 @@ import { Header } from '../components/Header/Header';
 import { CareAtGlance } from '../components/CareAtGlance/CareAtGlance';
 import { CareState } from '../components/CareState/CareState';
 import { NextAction } from '../components/NextAction/NextAction';
+import { ContextualAlerts } from '../components/Alerts/ContextualAlerts';
+import { MultiConditionView } from '../components/MultiCondition/MultiConditionView';
+import { SmartHandoff } from '../components/SmartHandoff/SmartHandoff';
 import { CareJourneyPreview } from '../components/Timeline/CareJourneyPreview';
 import {
   DEMO_PATIENT,
@@ -29,7 +32,22 @@ export function Home() {
           <NextAction actions={DEMO_NEXT_ACTIONS} />
         </div>
 
-        {/* Row 3: Short Care Journey Preview */}
+        {/* Row 3: Contextual Care Alerts & Preparation (Feature 6) */}
+        <div className={styles.alertsSection}>
+          <ContextualAlerts />
+        </div>
+
+        {/* Row 4: Multi-Condition Interaction Map (Feature 4) */}
+        <div className={styles.interactionSection}>
+          <MultiConditionView />
+        </div>
+
+        {/* Row 5: Smart Handoff / Cross-Specialty Care Summary (Feature 5) */}
+        <div className={styles.handoffSection}>
+          <SmartHandoff />
+        </div>
+
+        {/* Row 6: Short Care Journey Preview */}
         <div className={styles.journeySection}>
           <CareJourneyPreview events={DEMO_TIMELINE_EVENTS} />
         </div>
