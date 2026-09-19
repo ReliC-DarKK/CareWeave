@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from "fastify";
+import cors from "@fastify/cors";
 import sensible from "@fastify/sensible";
 import multipart from "@fastify/multipart";
 import { env } from "./config/env.js";
@@ -25,6 +26,10 @@ export async function buildApp(): Promise<FastifyInstance> {
     },
   });
 
+  await app.register(cors, {
+    origin: "http://localhost:3001",
+    credentials: true,
+  });
   await app.register(sensible);
   await app.register(multipart, {
     limits: {
