@@ -1,0 +1,357 @@
+// CareWeave backend (P2) — initial relational data model.
+//
+// FHIR concepts (Observation, DiagnosticReport, MedicationRequest,
+// Appointment) are used as architectural inspiration only. This is a
+// deliberately simple, practical model — not a FHIR implementation.
+//
+// Out of scope here (owned by P1): clinical reasoning, care-state
+// calculation, next-action logic, AI. This schema only stores data.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  PATIENT
+  DOCTOR
+  CAREGIVER
+}
+
+enum TimelineEventType {
+  OBSERVATION
+  MEDICATION
+  LAB
+  APPOINTMENT
+  CLINICAL_ENCOUNTER
+  DIAGNOSTIC
+  NOTE
+}
+
+enum MedicationEventType {
+  PRESCRIBED
+  DISPENSED
+  TAKEN
+  MISSED
+  STOPPED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum CaregiverAccessLevel {
+  FULL_ACCESS
+  READ_ONLY
+  EMERGENCY_ONLY
+}
+
+enum CaregiverGrantStatus {
+  PENDING
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum SymptomSeverity {
+  MILD
+  MODERATE
+  SEVERE
+}
+
+// ---------------------------------------------------------------------------
+// Core identity
+// ---------------------------------------------------------------------------
+
+/// A login-capable account. A PATIENT-role user is linked 1:1 to a
+/// Patient record; DOCTOR users are linked to patients via Provider and
+/// PatientCareTeam; CAREGIVER users are linked via PatientCaregiver.
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  patient      Patient?
+  provider     Provider?
+  caregiverOf  PatientCaregiver[]
+
+  @@map("users")
+}
+
+/// A patient record. One-to-one with the User account a PATIENT-role
+/// user logs in with.
+model Patient {
+  id          String   @id @default(uuid())
+  userId      String   @unique @map("user_id")
+  firstName   String   @map("first_name")
+  lastName    String   @map("last_name")
+  dateOfBirth DateTime @map("date_of_birth") @db.Date
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  conditions     Condition[]
+  timelineEvents TimelineEvent[]
+  medications    Medication[]
+  appointments   Appointment[]
+  careTeam       PatientCareTeam[]
+  caregivers     PatientCaregiver[]
+  labs           LabResult[]
+  symptoms       Symptom[]
+
+  @@map("patients")
+}
+
+/// A healthcare provider (doctor, specialist, etc). Optionally linked to
+/// a login-capable User when the provider has portal access.
+model Provider {
+  id           String  @id @default(uuid())
+  userId       String? @unique @map("user_id")
+  firstName    String  @map("first_name")
+  lastName     String  @map("last_name")
+  specialty    String?
+  organization String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  appointments Appointment[]
+  careTeamOf   PatientCareTeam[]
+
+  @@map("providers")
+}
+
+/// Join table for the many-to-many relationship between Patient and
+/// Provider — the "who is on this patient's care team" relationship,
+/// which backs DOCTOR authorization checks.
+model PatientCareTeam {
+  id         String   @id @default(uuid())
+  patientId  String   @map("patient_id")
+  providerId String   @map("provider_id")
+  role       String? // free-text role on this care team, e.g. "Oncologist", "PCP"
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  patient  Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, providerId])
+  @@index([providerId])
+  @@map("patient_care_team")
+}
+
+/// Explicit relationship and proxy access grant between a Patient and
+/// a Caregiver (a User account with role CAREGIVER).
+/// Tracks granted access levels, grant status, validity periods, and
+/// relationship context for patient-level authorization.
+model PatientCaregiver {
+  id           String               @id @default(uuid())
+  patientId    String               @map("patient_id")
+  caregiverId  String               @map("caregiver_id")
+  relationship String?              // e.g. "Spouse", "Daughter", "Parent", "Legal Guardian"
+  accessLevel  CaregiverAccessLevel @default(READ_ONLY) @map("access_level")
+  status       CaregiverGrantStatus @default(ACTIVE)
+  grantedAt    DateTime             @default(now()) @map("granted_at")
+  expiresAt    DateTime?            @map("expires_at")
+  revokedAt    DateTime?            @map("revoked_at")
+  notes        String?
+  createdAt    DateTime             @default(now()) @map("created_at")
+  updatedAt    DateTime             @updatedAt @map("updated_at")
+
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  caregiver User    @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, caregiverId])
+  @@index([caregiverId])
+  @@map("patient_caregivers")
+}
+
+// ---------------------------------------------------------------------------
+// Clinical data
+// ---------------------------------------------------------------------------
+
+/// A condition/diagnosis associated with a patient. Deliberately simple —
+/// no clinical coding system (ICD-10/SNOMED) enforced yet.
+model Condition {
+  id          String   @id @default(uuid())
+  patientId   String   @map("patient_id")
+  name        String
+  description String?
+  diagnosedAt DateTime? @map("diagnosed_at") @db.Date
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  patient        Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  timelineEvents TimelineEvent[]
+  labs           LabResult[]
+  symptoms       Symptom[]
+
+  @@index([patientId])
+  @@map("conditions")
+}
+
+/// A single point-in-time clinical event on a patient's timeline.
+/// Provenance (source type/reference, recordedAt) is preserved on every
+/// row — it must never be discarded when this data is transformed
+/// downstream (e.g. by P1's care-state engine).
+model TimelineEvent {
+  id          String            @id @default(uuid())
+  patientId   String            @map("patient_id")
+  conditionId String?           @map("condition_id")
+  type        TimelineEventType
+  eventTime   DateTime          @map("event_time")
+  title       String
+  description String?
+
+  /// Where this event came from, e.g. "EHR_IMPORT", "PROVIDER_ENTRY",
+  /// "PATIENT_REPORTED", "SEED_DATA". Free text at this stage.
+  sourceType String  @map("source_type")
+  /// Optional pointer back to the originating record/system, e.g. an
+  /// external EHR document ID. Not a foreign key — the source system is
+  /// outside this database.
+  sourceRef  String? @map("source_ref")
+
+  /// When this row was written to our database — distinct from
+  /// `eventTime`, which is when the clinical event actually happened.
+  recordedAt DateTime @default(now()) @map("recorded_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  condition Condition? @relation(fields: [conditionId], references: [id], onDelete: SetNull)
+
+  @@index([patientId, eventTime])
+  @@index([conditionId])
+  @@map("timeline_events")
+}
+
+// ---------------------------------------------------------------------------
+// Medications
+// ---------------------------------------------------------------------------
+
+/// The medication/prescription itself — analogous to a FHIR
+/// MedicationRequest. Distinct from MedicationEvent, which records what
+/// actually happened (dispensed, taken, missed, stopped) over time.
+model Medication {
+  id           String    @id @default(uuid())
+  patientId    String    @map("patient_id")
+  name         String
+  dosage       String?
+  frequency    String?
+  prescribedAt DateTime? @map("prescribed_at")
+  isActive     Boolean   @default(true) @map("is_active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  patient Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  events  MedicationEvent[]
+
+  @@index([patientId])
+  @@map("medications")
+}
+
+/// A single state change in a medication's lifecycle
+/// (PRESCRIBED/DISPENSED/TAKEN/MISSED/STOPPED). One Medication has many
+/// MedicationEvents over time.
+model MedicationEvent {
+  id           String              @id @default(uuid())
+  medicationId String              @map("medication_id")
+  type         MedicationEventType
+  occurredAt   DateTime            @map("occurred_at")
+  note         String?
+
+  sourceType String  @map("source_type")
+  sourceRef  String? @map("source_ref")
+  recordedAt DateTime @default(now()) @map("recorded_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  medication Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+
+  @@index([medicationId, occurredAt])
+  @@map("medication_events")
+}
+
+// ---------------------------------------------------------------------------
+// Appointments
+// ---------------------------------------------------------------------------
+
+model Appointment {
+  id         String            @id @default(uuid())
+  patientId  String            @map("patient_id")
+  providerId String            @map("provider_id")
+  scheduledAt DateTime         @map("scheduled_at")
+  durationMinutes Int?         @map("duration_minutes")
+  status     AppointmentStatus @default(SCHEDULED)
+  reason     String?
+  location   String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  patient  Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, scheduledAt])
+  @@index([providerId, scheduledAt])
+  @@map("appointments")
+}
+
+// ---------------------------------------------------------------------------
+// Labs & Symptoms (Structured clinical observations for P1 integration)
+// ---------------------------------------------------------------------------
+
+model LabResult {
+  id             String    @id @default(uuid())
+  patientId      String    @map("patient_id")
+  conditionId    String?   @map("condition_id")
+  name           String
+  value          Float
+  unit           String
+  referenceRange String?   @map("reference_range")
+  date           DateTime  @db.Date
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  condition Condition? @relation(fields: [conditionId], references: [id], onDelete: SetNull)
+
+  @@index([patientId])
+  @@index([conditionId])
+  @@map("lab_results")
+}
+
+model Symptom {
+  id          String          @id @default(uuid())
+  patientId   String          @map("patient_id")
+  conditionId String?         @map("condition_id")
+  name        String
+  severity    SymptomSeverity
+  date        DateTime        @db.Date
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  condition Condition? @relation(fields: [conditionId], references: [id], onDelete: SetNull)
+
+  @@index([patientId])
+  @@index([conditionId])
+  @@map("symptoms")
+}
