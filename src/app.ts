@@ -1,5 +1,6 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import sensible from "@fastify/sensible";
+import multipart from "@fastify/multipart";
 import { env } from "./config/env.js";
 import { registerErrorHandler } from "./middleware/error-handler.js";
 import { registerHealthRoutes } from "./modules/health.js";
@@ -10,6 +11,7 @@ import { registerMedicationRoutes } from "./modules/medications/medication.route
 import { registerAppointmentRoutes } from "./modules/appointments/appointment.routes.js";
 import { registerCareTeamRoutes } from "./modules/care-team/careTeam.routes.js";
 import { registerUserRoutes } from "./modules/users/user.routes.js";
+import { registerDocumentRoutes } from "./modules/documents/document.routes.js";
 
 /**
  * Builds a fully configured Fastify instance without starting it — this
@@ -24,6 +26,12 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   await app.register(sensible);
+  await app.register(multipart, {
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB limit
+      files: 1,
+    },
+  });
 
   registerErrorHandler(app);
 
@@ -34,6 +42,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   // (501 Not Implemented) until business logic is built out. See each
   // module's routes.ts for details.
   await app.register(registerPatientRoutes, { prefix: "/api/v1" });
+  await app.register(registerDocumentRoutes, { prefix: "/api/v1" });
   await app.register(registerConditionRoutes, { prefix: "/api/v1" });
   await app.register(registerTimelineRoutes, { prefix: "/api/v1" });
   await app.register(registerMedicationRoutes, { prefix: "/api/v1" });

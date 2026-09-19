@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
+    "build:care-logic": "npm --prefix ./packages/care-logic run build",
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -23,14 +24,18 @@
     "docker:down": "docker compose down"
   },
   "dependencies": {
+    "@careweave/care-logic": "file:./packages/care-logic",
+    "@fastify/multipart": "^8.3.1",
     "@fastify/sensible": "^5.6.0",
     "@prisma/client": "^5.20.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
+    "pdf-parse": "^1.1.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
+    "@types/pdf-parse": "^1.1.5",
     "prisma": "^5.20.0",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",

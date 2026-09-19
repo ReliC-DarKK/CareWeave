@@ -4,6 +4,7 @@ node_modules/
 # Build output
 dist/
 build/
+packages/care-logic/dist/
 
 # Environment / secrets — never commit real values
 .env

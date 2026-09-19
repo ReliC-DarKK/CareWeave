@@ -1,0 +1,13 @@
+{
+  "name": "@careweave/care-logic",
+  "version": "1.0.0",
+  "description": "Self-contained consumable care-logic engine for CareWeave",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ]
+}

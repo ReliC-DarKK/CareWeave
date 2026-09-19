@@ -610,6 +610,257 @@ The backend provides a reusable authorization hook in `src/modules/care-team/car
 
 ---
 
+### 9. POST /api/v1/patients/:patientId/documents
+
+- **Purpose:** Upload, validate, and process a clinical PDF document for a patient.
+- **Architecture Boundary:**
+  - **P2 (Backend):** Owns file validation, multipart handling, size limiting (10MB max), raw text extraction, document metadata storage, and provenance tracking.
+  - **P1 (Clinical Engine):** Owns clinical document extraction and interpretation. P2 hands off the raw extracted text to P1's document extractor boundary (`DefaultP1DocumentExtractor` / `P1DocumentExtractor`). P2 never performs clinical reasoning or invents medical concepts.
+  - **P3 (Frontend):** Sends the PDF via `multipart/form-data` and renders the returned structured clinical concepts.
+- **Method:** `POST`
+- **Path:** `/api/v1/patients/:patientId/documents`
+- **Path Parameters:**
+  - `patientId` (string, required): Unique patient identifier.
+- **Content-Type:** `multipart/form-data`
+- **Request Body:**
+  - Form field containing the PDF file (e.g. `file: <binary PDF buffer>`, `filename: "discharge_summary.pdf"`).
+- **Constraints & Validations:**
+  - Patient must exist in the database (returns `404 Not Found` if nonexistent).
+  - Content must be a valid PDF (`mimetype: application/pdf` or `.pdf` extension, verified with `%PDF-` magic bytes header).
+  - Maximum upload file size: 10MB (`10485760` bytes). Exceeding this returns `413 Payload Too Large`.
+- **Requires Live PostgreSQL:** **Yes** (validates patient existence and records a timeline event with document provenance).
+
+#### Successful Response (201 Created)
+```json
+{
+  "data": {
+    "document": {
+      "id": "e4b2d184-72bf-4638-bd91-30ef118c7e99",
+      "patientId": "fd2a1b68-f434-48d0-a8e1-e613216238ac",
+      "originalFilename": "discharge_summary.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 24576,
+      "uploadedAt": "2026-09-19T09:15:00.000Z",
+      "extractionStatus": "COMPLETED",
+      "provenance": {
+        "sourceType": "DOCUMENT_UPLOAD",
+        "sourceRef": "e4b2d184-72bf-4638-bd91-30ef118c7e99"
+      }
+    },
+    "extractedText": "Patient seen on 2025-03-10. Diagnosed with Breast Cancer. Prescribed Metformin 500mg. HbA1c: 6.8%.",
+    "clinicalData": {
+      "conditions": [
+        {
+          "name": "Breast Cancer",
+          "status": "active"
+        }
+      ],
+      "medications": [
+        {
+          "name": "Metformin",
+          "dosage": "500mg",
+          "frequency": "Twice daily",
+          "status": "prescribed"
+        }
+      ],
+      "labs": [
+        {
+          "name": "HbA1c",
+          "value": 6.8,
+          "unit": "%",
+          "referenceRange": "< 7.0%"
+        }
+      ],
+      "appointments": [],
+      "symptoms": [],
+      "timelineEvents": [
+        {
+          "type": "treatment",
+          "title": "Clinical Document Extraction: discharge_summary.pdf",
+          "description": "Extracted clinical concepts from discharge_summary.pdf"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Important Error Responses
+- `400 Bad Request`: Non-multipart request, missing file, non-PDF MIME type, or invalid `%PDF-` header.
+```json
+{
+  "error": {
+    "message": "Invalid file type: only PDF documents are supported",
+    "code": "BAD_REQUEST",
+    "details": {
+      "receivedMime": "image/png",
+      "filename": "scan.png"
+    }
+  }
+}
+```
+- `404 Not Found`: Patient does not exist.
+```json
+{
+  "error": {
+    "message": "Patient not found: nonexistent-patient",
+    "code": "NOT_FOUND"
+  }
+}
+```
+- `413 Payload Too Large`: Uploaded file exceeds the 10MB limit.
+```json
+{
+  "error": {
+    "message": "Document size exceeds maximum allowed limit of 10MB",
+    "code": "PAYLOAD_TOO_LARGE",
+    "details": {
+      "maxBytes": 10485760
+    }
+  }
+}
+```
+
+---
+
+### 10. GET /api/v1/patients/:patientId/documents/:documentId
+
+- **Purpose:** Retrieve metadata and provenance information for a previously processed document.
+- **Method:** `GET`
+- **Path:** `/api/v1/patients/:patientId/documents/:documentId`
+- **Path Parameters:**
+  - `patientId` (string, required): Unique patient identifier.
+  - `documentId` (string, required): Unique document identifier.
+
+#### Successful Response (200 OK)
+```json
+{
+  "data": {
+    "id": "e4b2d184-72bf-4638-bd91-30ef118c7e99",
+    "patientId": "fd2a1b68-f434-48d0-a8e1-e613216238ac",
+    "originalFilename": "discharge_summary.pdf",
+    "mimeType": "application/pdf",
+    "sizeBytes": 24576,
+    "uploadedAt": "2026-09-19T09:15:00.000Z",
+    "extractionStatus": "COMPLETED",
+    "provenance": {
+      "sourceType": "DOCUMENT_UPLOAD",
+      "sourceRef": "e4b2d184-72bf-4638-bd91-30ef118c7e99"
+    }
+  }
+}
+```
+
+---
+
+### 11. GET /api/v1/patients/:patientId/care-logic
+
+- **Purpose:** Executes Phase 1's clinical engine server-side by passing the normalized Patient data model to P1's `buildCareLogic(patient, referenceDate)`. Returns the complete synthesized care logic payload to the frontend.
+- **Architecture Boundary:**
+  - **P2 (Backend):** Responsible for data retrieval, normalization (via `careLogicViewService`), and server-side execution of P1's `buildCareLogic()`. P2 performs zero clinical calculations, rule evaluations, or summaries independently.
+  - **P1 (Clinical Engine):** Encapsulated within the `@careweave/care-logic` package. Owns `timeline`, `careState`, `interactions`, `nextActions`, and `summary` synthesis.
+  - **P3 (Frontend):** Renders the unified care plan, timeline, signals, and recommended next actions.
+- **Method:** `GET`
+- **Path:** `/api/v1/patients/:patientId/care-logic`
+- **Path Parameters:**
+  - `patientId` (string, required): Unique patient identifier.
+- **Query Parameters:**
+  - `referenceDate` (string, optional): Target point-in-time calculation date in `YYYY-MM-DD` format (e.g. `?referenceDate=2026-09-19`).
+- **Reference Date Behavior:**
+  - If provided, P1 evaluates recent symptoms, active regimens, upcoming appointments, and alert signals relative to this date.
+  - If omitted or blank, defaults to the server's current date formatted as `YYYY-MM-DD`.
+- **Required Headers:**
+  - `Accept: application/json`
+  - In development (`NODE_ENV=development` or `test`), authentication middleware is bypassed for local integration testing. In production, authorization tokens are enforced.
+- **Requires Live PostgreSQL:** **Yes**.
+
+#### Successful Response (200 OK)
+```json
+{
+  "data": {
+    "timeline": [
+      {
+        "id": "t1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+        "type": "diagnosis",
+        "date": "2025-03-10",
+        "title": "Biopsy confirmed malignancy",
+        "description": "Stage IIA, hormone receptor positive",
+        "conditionId": "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c"
+      },
+      {
+        "id": "lab-l1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+        "type": "lab",
+        "date": "2026-09-16",
+        "title": "HbA1c: 8.2 %",
+        "description": "Reference range: < 7.0%"
+      }
+    ],
+    "careState": {
+      "patientId": "fd2a1b68-f434-48d0-a8e1-e613216238ac",
+      "referenceDate": "2026-09-19",
+      "overallStatus": "needs-attention",
+      "activeConditions": [
+        {
+          "id": "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+          "name": "Breast Cancer",
+          "status": "active"
+        },
+        {
+          "id": "c2a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5d",
+          "name": "Type 2 Diabetes",
+          "status": "active"
+        }
+      ],
+      "recentSymptoms": [
+        {
+          "id": "s1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+          "name": "Fatigue",
+          "severity": "moderate",
+          "date": "2026-09-17"
+        }
+      ],
+      "recentLabs": [
+        {
+          "id": "l1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+          "name": "HbA1c",
+          "value": 8.2,
+          "unit": "%",
+          "referenceRange": "< 7.0%",
+          "date": "2026-09-16"
+        }
+      ],
+      "medicationAdherence": [],
+      "upcomingAppointments": [],
+      "attentionSignals": [
+        "Recent moderate symptom: Fatigue"
+      ]
+    },
+    "interactions": [],
+    "nextActions": [],
+    "summary": {
+      "headline": "Care needs attention",
+      "summary": "The patient is currently being monitored across Breast Cancer, Type 2 Diabetes. Recent symptoms, medication adherence, and upcoming appointments have been considered together to identify the most relevant next steps.",
+      "priorities": [],
+      "upcomingCare": []
+    }
+  }
+}
+```
+
+#### Important Error Responses
+- `400 Bad Request`: Validation failure.
+- `404 Not Found`: Patient not found.
+```json
+{
+  "error": {
+    "message": "Patient not found: nonexistent-patient",
+    "code": "NOT_FOUND"
+  }
+}
+```
+
+---
+
 ## Standard Error Response Envelopes
 
 All error responses return a standardized, safe JSON envelope:
