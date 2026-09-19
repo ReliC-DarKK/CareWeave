@@ -1,4 +1,4 @@
-import { CareInteraction } from "../care-state/interactionEngine";
+
 
 export type ActionPriority = "high" | "medium" | "low";
 
