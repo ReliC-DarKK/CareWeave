@@ -6,7 +6,7 @@ import documentService, {
 } from '../../services/documentService';
 import './DocumentUploadModal.css';
 
-export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }) {
+export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess, onExtractionComplete }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('idle'); // 'idle' | 'uploading' | 'success' | 'error'
@@ -112,6 +112,10 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
         ...processResult,
         extraction: extractionResult?.extraction,
       });
+
+      if (onExtractionComplete) {
+        onExtractionComplete(extractionResult);
+      }
     } catch (err) {
       setProcessingStatus('done');
       setProcessingResult({ error: err.message });

@@ -8,8 +8,6 @@ import {
   navigationItems,
   addDocumentData,
   careAtGlanceData,
-  careJourneyTimelineGroups,
-  timelineFilterCategories,
 } from './data/homePlaceholderData';
 import './App.css';
 
@@ -79,8 +77,6 @@ function AppContent({ theme, onToggleTheme }) {
         patientProfile={patientProfile}
         addDocumentData={addDocumentData}
         careAtGlanceData={careAtGlanceData}
-        timelineGroups={careJourneyTimelineGroups}
-        filterCategories={timelineFilterCategories}
         theme={theme}
         onToggleTheme={onToggleTheme}
         onLogout={handleLogout}

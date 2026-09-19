@@ -1,0 +1,286 @@
+/* Event Detail Modal — CareWeave Project 2.0 */
+
+.cw-detail-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: cwFadeIn 0.2s ease-out;
+}
+
+@keyframes cwFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cw-detail-modal-card {
+  background-color: var(--cw-bg-surface, #ffffff);
+  border: 1px solid var(--cw-border-card, #e2e8f0);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: cwSlideUp 0.25s ease-out;
+}
+
+@keyframes cwSlideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.cw-detail-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 28px 18px 28px;
+  border-bottom: 1px solid var(--cw-border-subtle, #f1f5f9);
+}
+
+.cw-detail-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cw-detail-type-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background-color: var(--cw-primary-light, #ede9fe);
+  color: var(--cw-primary, #6366f1);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.cw-detail-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cw-text-primary, #0f172a);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.cw-detail-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--cw-text-muted, #64748b);
+  margin-top: 2px;
+}
+
+.cw-detail-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--cw-text-muted, #64748b);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.cw-detail-close-btn:hover {
+  background-color: var(--cw-bg-surface-subtle, #f8fafc);
+  color: var(--cw-text-primary, #0f172a);
+}
+
+.cw-detail-modal-body {
+  padding: 20px 28px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.cw-detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cw-detail-section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cw-text-primary, #0f172a);
+  margin: 0;
+}
+
+.cw-detail-clinician-box {
+  background-color: var(--cw-bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--cw-border-subtle, #f1f5f9);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: var(--cw-text-secondary, #334155);
+}
+
+.cw-detail-clinician-box p {
+  margin: 4px 0;
+}
+
+/* Tests Table */
+.cw-detail-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--cw-border-card, #e2e8f0);
+  border-radius: 8px;
+}
+
+.cw-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.cw-detail-table th {
+  background-color: var(--cw-bg-surface-subtle, #f8fafc);
+  color: var(--cw-text-secondary, #334155);
+  font-weight: 600;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--cw-border-card, #e2e8f0);
+}
+
+.cw-detail-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--cw-border-subtle, #f1f5f9);
+  color: var(--cw-text-primary, #0f172a);
+}
+
+.cw-test-name {
+  font-weight: 500;
+}
+
+.cw-test-value {
+  font-weight: 600;
+}
+
+.cw-doc-flag-badge {
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Medications */
+.cw-detail-med-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cw-detail-med-item {
+  background-color: var(--cw-bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--cw-border-subtle, #f1f5f9);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+}
+
+.cw-detail-med-meta {
+  color: var(--cw-text-muted, #64748b);
+  font-size: 0.8rem;
+  margin-top: 3px;
+}
+
+/* Bullets */
+.cw-detail-bullet-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.875rem;
+  color: var(--cw-text-secondary, #334155);
+  line-height: 1.5;
+}
+
+.cw-detail-followup-box {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: var(--cw-text-secondary, #334155);
+}
+
+.cw-detail-followup-box ul {
+  margin: 4px 0 0 0;
+  padding-left: 20px;
+}
+
+/* Findings */
+.cw-detail-findings-box {
+  background-color: var(--cw-bg-surface-subtle, #f8fafc);
+  border: 1px solid var(--cw-border-subtle, #f1f5f9);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: var(--cw-text-secondary, #334155);
+  line-height: 1.5;
+}
+
+.cw-detail-findings-box p {
+  margin: 4px 0;
+}
+
+/* Provenance */
+.cw-detail-provenance-section {
+  padding-top: 12px;
+  border-top: 1px dashed var(--cw-border-card, #e2e8f0);
+}
+
+.cw-detail-provenance-text {
+  font-size: 0.8rem;
+  color: var(--cw-text-muted, #64748b);
+  margin: 2px 0;
+}
+
+.cw-detail-provenance-text code {
+  background-color: var(--cw-bg-surface-subtle, #f8fafc);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* Modal Footer */
+.cw-detail-modal-footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--cw-border-subtle, #f1f5f9);
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--cw-bg-surface, #ffffff);
+}
+
+.cw-btn-secondary {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: var(--cw-bg-surface-subtle, #f1f5f9);
+  border: 1px solid var(--cw-border-card, #e2e8f0);
+  color: var(--cw-text-primary, #0f172a);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cw-btn-secondary:hover {
+  background-color: var(--cw-border-card, #e2e8f0);
+}

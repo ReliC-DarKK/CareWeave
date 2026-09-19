@@ -75,6 +75,42 @@ export const patientService = {
 
     return data;
   },
+
+  /**
+   * Fetch Care Journey timeline for a specific patient
+   * @param {string} patientId
+   * @returns {Promise<{ success: boolean, patient: object, events: Array<object>, count: number }>}
+   */
+  async getCareJourney(patientId) {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required. Please log in to view care journey.');
+    }
+
+    if (!patientId || typeof patientId !== 'string') {
+      throw new Error('Invalid patient identifier.');
+    }
+
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/patients/${encodeURIComponent(patientId)}/care-journey`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (netErr) {
+      throw new Error('Network error. Unable to reach care journey service.');
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to retrieve care journey.');
+    }
+
+    return data;
+  },
 };
 
 export default patientService;

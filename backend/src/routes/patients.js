@@ -9,6 +9,7 @@
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import { patientService } from '../services/patientService.js';
+import { careJourneyService } from '../services/careJourneyService.js';
 
 const router = express.Router();
 
@@ -105,6 +106,59 @@ router.get('/:patientId', authenticateToken, (req, res) => {
     console.error(`Error retrieving patient ${req.params?.patientId}: ${err.message}`);
     return res.status(500).json({
       error: 'An unexpected error occurred while retrieving the patient record.',
+    });
+  }
+});
+
+/**
+ * GET /api/patients/:patientId/care-journey
+ * Protected endpoint returning chronological, factual Care Journey Timeline events for a patient.
+ * Strictly verifies ownership against authenticated user JWT.
+ */
+router.get('/:patientId/care-journey', authenticateToken, (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    // 1. Validate ID format
+    if (!isValidPatientId(patientId)) {
+      return res.status(400).json({
+        error: 'Invalid patient identifier format.',
+      });
+    }
+
+    const ownerEmail = req.user.email;
+
+    // 2. Verify existence
+    const patient = patientService.getPatientById(patientId);
+    if (!patient) {
+      return res.status(404).json({
+        error: 'Patient not found.',
+      });
+    }
+
+    // 3. Verify ownership
+    if (patient.ownerEmail !== ownerEmail) {
+      return res.status(403).json({
+        error: 'You do not have permission to view this patient care journey.',
+      });
+    }
+
+    // 4. Build chronological Care Journey timeline
+    const result = careJourneyService.getCareJourneyForPatient(patientId, ownerEmail);
+    if (!result) {
+      return res.status(404).json({
+        error: 'Care journey not found.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (err) {
+    console.error(`Error retrieving care journey for ${req.params?.patientId}: ${err.message}`);
+    return res.status(500).json({
+      error: 'An unexpected error occurred while retrieving the care journey.',
     });
   }
 });
