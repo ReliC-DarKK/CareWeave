@@ -6,6 +6,7 @@ import authRouter from './routes/auth.js';
 import documentsRouter from './routes/documents.js';
 import documentProcessingRouter from './routes/documentProcessing.js';
 import medicalExtractionRouter from './routes/medicalExtraction.js';
+import patientsRouter from './routes/patients.js';
 import { initDatabase } from './database/db.js';
 
 dotenv.config();
@@ -35,6 +36,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/documents', documentsRouter);
 app.use('/api/documents', documentProcessingRouter);
 app.use('/api/documents', medicalExtractionRouter);
+app.use('/api/patients', patientsRouter);
 
 app.listen(PORT, () => {
   console.log(`CareWeave Project 2.0 backend running on port ${PORT}`);

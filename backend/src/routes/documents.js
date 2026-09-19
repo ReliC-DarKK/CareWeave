@@ -112,6 +112,7 @@ router.get('/', authenticateToken, (req, res) => {
       uploadedAt: doc.uploadedAt,
       processingStatus: doc.processingStatus,
       extractionStatus: doc.extractionStatus || null,
+      patientId: doc.patientId || null,
       hasExtraction: doc.extractionStatus === 'EXTRACTED',
     }));
 
@@ -171,6 +172,7 @@ router.get('/:documentId', authenticateToken, (req, res) => {
         uploadedAt: doc.uploadedAt,
         processingStatus: doc.processingStatus,
         extractionStatus: doc.extractionStatus || null,
+        patientId: doc.patientId || null,
       },
       extraction: extraction || null,
     });

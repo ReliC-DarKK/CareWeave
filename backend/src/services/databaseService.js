@@ -2,7 +2,7 @@
  * Database Service — CareWeave Project 2.0
  *
  * Data Access Layer for SQLite persistent storage.
- * Handles documents and structured Step 9 medical information extraction records.
+ * Handles documents, structured Step 9 extractions, and Step 11 patient records.
  * Uses parameterized queries to prevent SQL injection.
  */
 
@@ -36,6 +36,7 @@ function mapDocumentRow(row) {
     processingStatus: row.processing_status,
     processingResult,
     extractionStatus: row.extraction_status || null,
+    patientId: row.patient_id || null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -89,7 +90,30 @@ function mapExtractionRow(row) {
   };
 }
 
+/**
+ * Format a patient database row into a standardized patient object
+ * @param {object} row
+ * @returns {object|null}
+ */
+function mapPatientRow(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    ownerEmail: row.owner_email,
+    name: row.name,
+    dateOfBirth: row.date_of_birth || null,
+    identifier: row.identifier || null,
+    documentCount: row.document_count !== undefined ? Number(row.document_count) : undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 export const databaseService = {
+  // ──────────────────────────────────────────────
+  // Documents
+  // ──────────────────────────────────────────────
+
   /**
    * Insert a newly uploaded document or update its metadata
    * @param {object} doc
@@ -104,8 +128,8 @@ export const databaseService = {
       INSERT INTO documents (
         id, owner_email, original_name, stored_filename, mime_type,
         size, uploaded_at, processing_status, processing_result, extraction_status,
-        created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        patient_id, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(id) DO UPDATE SET
         owner_email = excluded.owner_email,
         original_name = excluded.original_name,
@@ -115,6 +139,7 @@ export const databaseService = {
         processing_status = excluded.processing_status,
         processing_result = excluded.processing_result,
         extraction_status = excluded.extraction_status,
+        patient_id = COALESCE(excluded.patient_id, documents.patient_id),
         updated_at = excluded.updated_at
     `);
 
@@ -129,6 +154,7 @@ export const databaseService = {
       doc.processingStatus || 'UPLOADED',
       processingResultStr,
       doc.extractionStatus || null,
+      doc.patientId || null,
       doc.createdAt || now,
       now
     );
@@ -171,6 +197,32 @@ export const databaseService = {
     const merged = { ...existing, ...updates };
     return this.saveDocument(merged);
   },
+
+  /**
+   * Associate a document with a patient
+   * @param {string} documentId
+   * @param {string|null} patientId
+   */
+  updateDocumentPatientId(documentId, patientId) {
+    const db = getDb();
+    const now = new Date().toISOString();
+    db.prepare('UPDATE documents SET patient_id = ?, updated_at = ? WHERE id = ?').run(patientId, now, documentId);
+  },
+
+  /**
+   * Retrieve all documents associated with a patient
+   * @param {string} patientId
+   * @returns {object[]}
+   */
+  getDocumentsByPatientId(patientId) {
+    const db = getDb();
+    const rows = db.prepare('SELECT * FROM documents WHERE patient_id = ? ORDER BY uploaded_at ASC').all(patientId);
+    return rows.map(mapDocumentRow);
+  },
+
+  // ──────────────────────────────────────────────
+  // Extractions
+  // ──────────────────────────────────────────────
 
   /**
    * Persist structured Step 9 extraction results for a document.
@@ -257,6 +309,102 @@ export const databaseService = {
       document: doc,
       extraction,
     };
+  },
+
+  // ──────────────────────────────────────────────
+  // Patients (Step 11)
+  // ──────────────────────────────────────────────
+
+  /**
+   * Create a new patient record
+   * @param {object} patient
+   * @returns {object}
+   */
+  createPatient(patient) {
+    const db = getDb();
+    const now = new Date().toISOString();
+
+    const stmt = db.prepare(`
+      INSERT INTO patients (id, owner_email, name, date_of_birth, identifier, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    stmt.run(
+      patient.id,
+      patient.ownerEmail,
+      patient.name,
+      patient.dateOfBirth || null,
+      patient.identifier || null,
+      patient.createdAt || now,
+      patient.updatedAt || now
+    );
+
+    return this.getPatientById(patient.id);
+  },
+
+  /**
+   * Retrieve a patient by ID
+   * @param {string} patientId
+   * @returns {object|null}
+   */
+  getPatientById(patientId) {
+    const db = getDb();
+    const row = db.prepare('SELECT * FROM patients WHERE id = ?').get(patientId);
+    return mapPatientRow(row);
+  },
+
+  /**
+   * Retrieve all patients owned by an email address with document counts
+   * @param {string} ownerEmail
+   * @returns {object[]}
+   */
+  getPatientsByOwner(ownerEmail) {
+    const db = getDb();
+    const rows = db.prepare(`
+      SELECT p.*, COUNT(d.id) AS document_count
+      FROM patients p
+      LEFT JOIN documents d ON d.patient_id = p.id
+      WHERE p.owner_email = ?
+      GROUP BY p.id
+      ORDER BY p.updated_at DESC
+    `).all(ownerEmail);
+
+    return rows.map(mapPatientRow);
+  },
+
+  /**
+   * Find patient by explicit identifier and owner
+   * @param {string} ownerEmail
+   * @param {string} identifier
+   * @returns {object|null}
+   */
+  findPatientByIdentifier(ownerEmail, identifier) {
+    if (!ownerEmail || !identifier) return null;
+    const db = getDb();
+    const row = db.prepare('SELECT * FROM patients WHERE owner_email = ? AND identifier = ?').get(ownerEmail, identifier);
+    return mapPatientRow(row);
+  },
+
+  /**
+   * Find patient by normalized name and date of birth for an owner
+   * @param {string} ownerEmail
+   * @param {string} normalizedName
+   * @param {string} normalizedDob
+   * @returns {object|null}
+   */
+  findPatientByNameAndDob(ownerEmail, normalizedName, normalizedDob) {
+    if (!ownerEmail || !normalizedName || !normalizedDob) return null;
+    const db = getDb();
+    // Fetch all patients for this owner and compare normalized strings
+    const rows = db.prepare('SELECT * FROM patients WHERE owner_email = ?').all(ownerEmail);
+    for (const row of rows) {
+      const dbNormName = (row.name || '').toLowerCase().replace(/[ \t]+/g, ' ').trim();
+      const dbNormDob = (row.date_of_birth || '').toLowerCase().replace(/[ \t]+/g, ' ').trim();
+      if (dbNormName === normalizedName && dbNormDob === normalizedDob) {
+        return mapPatientRow(row);
+      }
+    }
+    return null;
   },
 };
 

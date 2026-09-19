@@ -55,8 +55,22 @@ export function initDatabase(customPath) {
     db.pragma('journal_mode = WAL');
   }
 
-  // Schema creation: documents table
+  // Schema creation: patients, documents, extractions
   db.exec(`
+    CREATE TABLE IF NOT EXISTS patients (
+      id TEXT PRIMARY KEY,
+      owner_email TEXT NOT NULL,
+      name TEXT NOT NULL,
+      date_of_birth TEXT,
+      identifier TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_patients_owner ON patients(owner_email);
+    CREATE INDEX IF NOT EXISTS idx_patients_lookup ON patients(owner_email, name, date_of_birth);
+    CREATE INDEX IF NOT EXISTS idx_patients_identifier ON patients(owner_email, identifier);
+
     CREATE TABLE IF NOT EXISTS documents (
       id TEXT PRIMARY KEY,
       owner_email TEXT NOT NULL,
@@ -68,8 +82,10 @@ export function initDatabase(customPath) {
       processing_status TEXT NOT NULL DEFAULT 'UPLOADED',
       processing_result TEXT,
       extraction_status TEXT,
+      patient_id TEXT,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE SET NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_documents_owner ON documents(owner_email);
@@ -96,6 +112,14 @@ export function initDatabase(customPath) {
 
     CREATE INDEX IF NOT EXISTS idx_extractions_doc ON extractions(document_id);
   `);
+
+  // Idempotently add patient_id column if table was already created in Step 10
+  const docColumns = db.prepare('PRAGMA table_info(documents)').all();
+  const hasPatientId = docColumns.some((col) => col.name === 'patient_id');
+  if (!hasPatientId) {
+    db.exec('ALTER TABLE documents ADD COLUMN patient_id TEXT REFERENCES patients(id) ON DELETE SET NULL;');
+  }
+  db.exec('CREATE INDEX IF NOT EXISTS idx_documents_patient ON documents(patient_id);');
 
   dbInstance = db;
   return dbInstance;

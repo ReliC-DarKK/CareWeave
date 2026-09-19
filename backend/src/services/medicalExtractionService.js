@@ -22,6 +22,7 @@
 
 import { getDocument, updateDocument } from './documentRegistry.js';
 import { databaseService } from './databaseService.js';
+import { patientService } from './patientService.js';
 import {
   PROCESSING_STATUS,
   resolveDocumentPath,
@@ -101,6 +102,11 @@ export async function extractMedicalInformation(documentId, options = {}) {
   // 3. Check persistent database first (prevents re-extraction and handles restarts)
   const persistedExtraction = databaseService.getExtractionByDocumentId(documentId);
   if (persistedExtraction) {
+    if (!doc.patientId) {
+      try {
+        patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, persistedExtraction.patient);
+      } catch {}
+    }
     return {
       document: {
         id: doc.id,
@@ -172,12 +178,19 @@ export async function extractMedicalInformation(documentId, options = {}) {
       extractionResult: structuredData,
     });
 
+    // 8. Associate document with patient record (Step 11)
+    try {
+      patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, structuredData.patient);
+    } catch (patientErr) {
+      console.warn(`Patient association notice for ${documentId}: ${patientErr.message}`);
+    }
+
     // Safe metadata-only logging — NEVER logs patient names, values, or PHI
     console.log(
       `Document ${documentId}: Medical extraction persisted to SQLite (${structuredData.provenance?.fieldCounts?.tests || 0} tests, ${structuredData.provenance?.fieldCounts?.medications || 0} medications)`
     );
 
-    // 8. Return structured result
+    // 9. Return structured result
     return {
       document: {
         id: doc.id,
