@@ -12,6 +12,8 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
   const [uploadStatus, setUploadStatus] = useState('idle'); // 'idle' | 'uploading' | 'success' | 'error'
   const [statusMessage, setStatusMessage] = useState('');
   const [uploadedDocumentMeta, setUploadedDocumentMeta] = useState(null);
+  const [processingStatus, setProcessingStatus] = useState('idle'); // 'idle' | 'processing' | 'done'
+  const [processingResult, setProcessingResult] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -22,13 +24,15 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
     setUploadStatus('idle');
     setStatusMessage('');
     setUploadedDocumentMeta(null);
+    setProcessingStatus('idle');
+    setProcessingResult(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const handleClose = () => {
-    if (uploadStatus === 'uploading') return;
+    if (uploadStatus === 'uploading' || processingStatus === 'processing' || processingStatus === 'extracting') return;
     handleReset();
     onClose();
   };
@@ -59,7 +63,7 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
   const handleDragOver = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!isDragging) setIsDragging(true);
+    setIsDragging(true);
   };
 
   const handleDragLeave = (e) => {
@@ -79,6 +83,41 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
     }
   };
 
+  /**
+   * Trigger document processing followed by medical information extraction.
+   * Runs silently — does not block the upload success UI.
+   */
+  const triggerProcessing = async (documentId) => {
+    setProcessingStatus('processing');
+    setProcessingResult(null);
+
+    try {
+      // Step 8: Document text processing
+      const processResult = await documentService.processDocument(documentId);
+
+      // If document is an image requiring OCR or processing failed, stop here
+      const processStatus = processResult?.processing?.status || processResult?.document?.status;
+      if (processStatus !== 'READY') {
+        setProcessingStatus('done');
+        setProcessingResult(processResult);
+        return;
+      }
+
+      // Step 9: Medical information extraction
+      setProcessingStatus('extracting');
+      const extractionResult = await documentService.extractDocument(documentId);
+
+      setProcessingStatus('done');
+      setProcessingResult({
+        ...processResult,
+        extraction: extractionResult?.extraction,
+      });
+    } catch (err) {
+      setProcessingStatus('done');
+      setProcessingResult({ error: err.message });
+    }
+  };
+
   const handleUpload = async () => {
     if (!selectedFile || uploadStatus === 'uploading') return;
 
@@ -93,10 +132,84 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
       if (onUploadSuccess) {
         onUploadSuccess(response.document);
       }
+
+      // Auto-trigger processing and extraction after successful upload
+      if (response.document?.id) {
+        triggerProcessing(response.document.id);
+      }
     } catch (err) {
       setUploadStatus('error');
       setStatusMessage(err.message || 'Upload failed. Please try again.');
     }
+  };
+
+  /**
+   * Render a minimal processing and extraction status line below the success message.
+   * Clinical and understated — no flashy animations.
+   */
+  const renderProcessingStatus = () => {
+    if (processingStatus === 'idle') return null;
+
+    if (processingStatus === 'processing') {
+      return (
+        <p className="cw-processing-status cw-processing-active">
+          Processing document...
+        </p>
+      );
+    }
+
+    if (processingStatus === 'extracting') {
+      return (
+        <p className="cw-processing-status cw-processing-active">
+          Extracting medical information...
+        </p>
+      );
+    }
+
+    // processingStatus === 'done'
+    if (processingResult?.error) {
+      return (
+        <p className="cw-processing-status cw-processing-failed">
+          Processing could not be completed.
+        </p>
+      );
+    }
+
+    if (processingResult?.extraction?.status === 'EXTRACTED') {
+      return (
+        <p className="cw-processing-status cw-processing-ready">
+          Medical information extracted.
+        </p>
+      );
+    }
+
+    const status = processingResult?.processing?.status || processingResult?.document?.status;
+
+    if (status === 'READY') {
+      return (
+        <p className="cw-processing-status cw-processing-ready">
+          Document processed successfully.
+        </p>
+      );
+    }
+
+    if (status === 'OCR_REQUIRED') {
+      return (
+        <p className="cw-processing-status cw-processing-ocr">
+          Image document uploaded. OCR processing will be available soon.
+        </p>
+      );
+    }
+
+    if (status === 'FAILED') {
+      return (
+        <p className="cw-processing-status cw-processing-failed">
+          Processing could not be completed.
+        </p>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -117,7 +230,7 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
             className="cw-modal-close-btn"
             aria-label="Close dialog"
             onClick={handleClose}
-            disabled={uploadStatus === 'uploading'}
+            disabled={uploadStatus === 'uploading' || processingStatus === 'processing' || processingStatus === 'extracting'}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -156,6 +269,8 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
               <p className="cw-success-hint">
                 Your medical document has been securely stored.
               </p>
+              {/* Processing status line */}
+              {renderProcessingStatus()}
             </div>
           ) : (
             <>

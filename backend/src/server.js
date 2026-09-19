@@ -4,8 +4,14 @@ import dotenv from 'dotenv';
 import healthRouter from './routes/health.js';
 import authRouter from './routes/auth.js';
 import documentsRouter from './routes/documents.js';
+import documentProcessingRouter from './routes/documentProcessing.js';
+import medicalExtractionRouter from './routes/medicalExtraction.js';
+import { initDatabase } from './database/db.js';
 
 dotenv.config();
+
+// Initialize persistent SQLite database
+initDatabase();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +33,8 @@ app.use(express.json());
 app.use('/api', healthRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/documents', documentsRouter);
+app.use('/api/documents', documentProcessingRouter);
+app.use('/api/documents', medicalExtractionRouter);
 
 app.listen(PORT, () => {
   console.log(`CareWeave Project 2.0 backend running on port ${PORT}`);

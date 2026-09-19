@@ -3,3 +3,8 @@ node_modules/
 *.log
 uploads/*
 !uploads/.gitkeep
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+data/

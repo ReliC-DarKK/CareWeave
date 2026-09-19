@@ -344,3 +344,40 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* Processing Status — minimal, clinical status line */
+.cw-processing-status {
+  font-size: 12px;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.cw-processing-active {
+  color: var(--cw-text-muted);
+}
+
+.cw-processing-ready {
+  color: #059669;
+}
+
+.cw-processing-ocr {
+  color: #D97706;
+}
+
+.cw-processing-failed {
+  color: #DC2626;
+}
+
+[data-theme="dark"] .cw-processing-ready {
+  color: #34D399;
+}
+
+[data-theme="dark"] .cw-processing-ocr {
+  color: #FBBF24;
+}
+
+[data-theme="dark"] .cw-processing-failed {
+  color: #F87171;
+}
+

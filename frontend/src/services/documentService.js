@@ -92,6 +92,147 @@ export const documentService = {
 
     return data;
   },
+
+  /**
+   * Trigger document processing (text extraction) on a previously uploaded document.
+   * @param {string} documentId — Server-generated document ID from upload response
+   * @returns {Promise<{ success: boolean, document: object, processing: object }>}
+   */
+  async processDocument(documentId) {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required. Please log in to process documents.');
+    }
+
+    if (!documentId || typeof documentId !== 'string') {
+      throw new Error('Invalid document identifier.');
+    }
+
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/documents/${encodeURIComponent(documentId)}/process`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (netErr) {
+      throw new Error('Network error. Unable to reach document processing service.');
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || 'Document processing failed. Please try again.');
+    }
+
+    return data;
+  },
+
+  /**
+   * Trigger medical information extraction on a previously processed document.
+   * @param {string} documentId — Server-generated document ID
+   * @returns {Promise<{ success: boolean, document: object, extraction: object }>}
+   */
+  async extractDocument(documentId) {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required. Please log in to extract document data.');
+    }
+
+    if (!documentId || typeof documentId !== 'string') {
+      throw new Error('Invalid document identifier.');
+    }
+
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/documents/${encodeURIComponent(documentId)}/extract`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (netErr) {
+      throw new Error('Network error. Unable to reach medical extraction service.');
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || 'Medical information extraction failed. Please try again.');
+    }
+
+    return data;
+  },
+
+  /**
+   * Fetch all persisted documents for the authenticated user
+   * @returns {Promise<{ success: boolean, documents: Array<object> }>}
+   */
+  async getDocuments() {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required. Please log in to view documents.');
+    }
+
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/documents`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (netErr) {
+      throw new Error('Network error. Unable to fetch documents.');
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to retrieve documents.');
+    }
+
+    return data;
+  },
+
+  /**
+   * Fetch a single persisted document and its structured extraction details
+   * @param {string} documentId
+   * @returns {Promise<{ success: boolean, document: object, extraction: object|null }>}
+   */
+  async getDocument(documentId) {
+    const token = authService.getToken();
+    if (!token) {
+      throw new Error('Authentication required. Please log in to view document.');
+    }
+
+    if (!documentId || typeof documentId !== 'string') {
+      throw new Error('Invalid document identifier.');
+    }
+
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/documents/${encodeURIComponent(documentId)}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (netErr) {
+      throw new Error('Network error. Unable to fetch document details.');
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data?.error || 'Failed to retrieve document details.');
+    }
+
+    return data;
+  },
 };
 
 export default documentService;
