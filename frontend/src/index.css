@@ -1,0 +1,135 @@
+:root {
+  /* Surface and Background Palettes - Authenticated 1.0 specifications */
+  --cw-bg-canvas: #F4F6F9;
+  --cw-bg-surface: #FFFFFF;
+  --cw-bg-surface-subtle: #F8FAFC;
+  --cw-bg-muted: #EDF2F7;
+
+  /* Typography & High-Contrast Clinical Text */
+  --cw-font: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --cw-text-primary: #0F172A;
+  --cw-text-secondary: #334155;
+  --cw-text-muted: #64748B;
+  --cw-text-subtle: #94A3B8;
+
+  /* Primary Brand - CareWeave Purple */
+  --cw-primary: #5B4DF5;
+  --cw-primary-hover: #493BE0;
+  --cw-primary-light: #F0EEFF;
+  --cw-primary-border: #DDD6FE;
+
+  /* Muted Clinical Condition Tints (1.0 exact) */
+  --cw-rose-bg: #FCE7F3;
+  --cw-rose-border: #FECDD3;
+  --cw-rose-accent: #DB2777;
+  --cw-rose-text: #831843;
+
+  --cw-blue-bg: #DBEAFE;
+  --cw-blue-border: #BFDBFE;
+  --cw-blue-accent: #2563EB;
+  --cw-blue-text: #1E40AF;
+
+  --cw-teal-bg: #D1FAE5;
+  --cw-teal-border: #99F6E4;
+  --cw-teal-accent: #059669;
+  --cw-teal-text: #115E59;
+
+  /* Structural Borders */
+  --cw-border-subtle: #EEF2F6;
+  --cw-border-card: #E2E8F0;
+  --cw-border-medium: #CBD5E1;
+
+  /* Shadows */
+  --cw-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --cw-shadow-hover: 0 4px 8px rgba(15, 23, 42, 0.06);
+
+  /* Radii */
+  --cw-radius-xs: 4px;
+  --cw-radius-sm: 8px;
+  --cw-radius-md: 12px;
+  --cw-radius-lg: 16px;
+  --cw-radius-full: 9999px;
+
+  /* Dimensions */
+  --cw-sidebar-width: 256px;
+  --cw-header-height: 64px;
+}
+
+/* Dark Mode Theme */
+[data-theme="dark"] {
+  --cw-bg-canvas: #0B0F19;
+  --cw-bg-surface: #131A2A;
+  --cw-bg-surface-subtle: #182238;
+  --cw-bg-muted: #1E2B45;
+
+  --cw-text-primary: #F8FAFC;
+  --cw-text-secondary: #CBD5E1;
+  --cw-text-muted: #94A3B8;
+  --cw-text-subtle: #64748B;
+
+  --cw-primary: #7C72F8;
+  --cw-primary-hover: #9087FB;
+  --cw-primary-light: #21254A;
+  --cw-primary-border: #383D75;
+
+  --cw-rose-bg: #3B1626;
+  --cw-rose-border: #5E203C;
+  --cw-rose-accent: #F472B6;
+  --cw-rose-text: #FCE7F3;
+
+  --cw-blue-bg: #13274A;
+  --cw-blue-border: #1E3D75;
+  --cw-blue-accent: #60A5FA;
+  --cw-blue-text: #DBEAFE;
+
+  --cw-teal-bg: #0D2D26;
+  --cw-teal-border: #154E41;
+  --cw-teal-accent: #34D399;
+  --cw-teal-text: #D1FAE5;
+
+  --cw-border-subtle: #1C263D;
+  --cw-border-card: #243250;
+  --cw-border-medium: #33446B;
+
+  --cw-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --cw-shadow-hover: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--cw-font);
+  background-color: var(--cw-bg-canvas);
+  color: var(--cw-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  font-size: 13.5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}

@@ -1,0 +1,8 @@
+.cw-home-page {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding-bottom: 40px;
+  background-color: var(--cw-bg-canvas);
+  transition: background-color 0.2s ease;
+}

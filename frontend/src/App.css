@@ -1,0 +1,13 @@
+.cw-app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--cw-bg-canvas);
+  overflow-x: hidden;
+}
+
+@media (max-width: 1024px) {
+  .cw-app-layout {
+    overflow-x: auto;
+  }
+}

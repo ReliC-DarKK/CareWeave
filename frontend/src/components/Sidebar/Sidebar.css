@@ -1,0 +1,270 @@
+.cw-sidebar {
+  width: var(--cw-sidebar-width);
+  min-width: var(--cw-sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: var(--cw-bg-surface);
+  border-right: 1px solid var(--cw-border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 20;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* 1. Brand */
+.cw-sidebar-brand {
+  padding: 24px 20px 18px 20px;
+  flex-shrink: 0;
+}
+
+.cw-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cw-brand-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cw-brand-logo-svg {
+  width: 38px;
+  height: 38px;
+  display: block;
+}
+
+.cw-brand-text-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cw-brand-name {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--cw-text-primary);
+  letter-spacing: -0.3px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.cw-brand-tagline {
+  font-size: 11px;
+  color: var(--cw-text-muted);
+  font-weight: 400;
+  margin: 3px 0 0 0;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+}
+
+/* 2. Navigation */
+.cw-sidebar-nav {
+  padding: 4px 14px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.cw-sidebar-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cw-sidebar-nav-item {
+  margin: 0;
+}
+
+.cw-sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  color: var(--cw-text-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: var(--cw-radius-md);
+  border: none;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+  outline: none;
+  width: 100%;
+  text-align: left;
+}
+
+.cw-sidebar-nav-link:hover {
+  background-color: var(--cw-bg-surface-subtle);
+  color: var(--cw-text-primary);
+}
+
+.cw-sidebar-nav-link:focus-visible {
+  outline: 2px solid var(--cw-primary);
+  outline-offset: -2px;
+  background-color: var(--cw-bg-surface-subtle);
+}
+
+/* Active Nav Pill: 1.0 exact */
+.cw-sidebar-nav-active {
+  background-color: var(--cw-primary-light) !important;
+  color: var(--cw-primary) !important;
+  font-weight: 600;
+}
+
+.cw-sidebar-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--cw-text-muted);
+  transition: color 150ms ease;
+}
+
+.cw-sidebar-nav-active .cw-sidebar-nav-icon {
+  color: var(--cw-primary);
+}
+
+.cw-sidebar-nav-label {
+  letter-spacing: 0.1px;
+}
+
+/* 3. Promo Card: 1.0 exact */
+.cw-sidebar-promo-card {
+  margin: auto 14px 12px 14px;
+  background: linear-gradient(180deg, #F3F5FF 0%, #E3E8FD 100%);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  height: 168px;
+  min-height: 168px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 16px 14px 0 14px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .cw-sidebar-promo-card {
+  background: linear-gradient(180deg, #1C223A 0%, #161A2D 100%);
+  border: 1px solid var(--cw-border-card);
+}
+
+.cw-sidebar-promo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
+  position: relative;
+  max-width: 125px;
+}
+
+.cw-promo-line {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1E293B;
+  line-height: 1.35;
+  margin: 0;
+}
+
+[data-theme="dark"] .cw-promo-line {
+  color: #E2E8F0;
+}
+
+.cw-promo-bold {
+  font-weight: 700;
+}
+
+.cw-sidebar-promo-illustration {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cw-promo-illustration-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 4. Patient Profile Footer: 1.0 exact */
+.cw-sidebar-footer {
+  padding: 10px 18px 18px 18px;
+  background-color: var(--cw-bg-surface);
+  flex-shrink: 0;
+  border-top: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+
+.cw-patient-profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px 0;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: opacity 0.15s ease;
+}
+
+.cw-patient-profile:hover {
+  opacity: 0.85;
+}
+
+.cw-patient-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cw-avatar-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.cw-avatar-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cw-patient-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.cw-patient-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cw-text-primary);
+  line-height: 1.25;
+}
+
+.cw-patient-role {
+  font-size: 11.5px;
+  color: var(--cw-text-muted);
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.cw-profile-chevron {
+  color: var(--cw-text-subtle);
+  flex-shrink: 0;
+}
