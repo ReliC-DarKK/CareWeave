@@ -1,0 +1,6 @@
+{
+  "name": "@careweave/care-logic",
+  "version": "1.0.0",
+  "main": "../dist/care-logic/index.js",
+  "types": "../dist/care-logic/index.d.ts"
+}
