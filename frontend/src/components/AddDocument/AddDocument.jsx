@@ -1,7 +1,7 @@
 import React from 'react';
 import './AddDocument.css';
 
-export default function AddDocument({ data }) {
+export default function AddDocument({ data, onOpenUpload }) {
   const {
     title = 'Add Document',
     subtitle = 'Upload a medical document to update your care journey.',
@@ -40,9 +40,8 @@ export default function AddDocument({ data }) {
             <button
               type="button"
               className="cw-add-doc-btn"
-              onClick={() => {
-                // Future document upload handler
-              }}
+              onClick={onOpenUpload}
+              aria-haspopup="dialog"
             >
               {buttonText}
             </button>

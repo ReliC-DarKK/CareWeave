@@ -11,3 +11,26 @@
     overflow-x: auto;
   }
 }
+
+.cw-loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--cw-bg-canvas);
+  color: var(--cw-text-secondary);
+  font-family: var(--cw-font);
+  font-size: 14px;
+}
+
+.cw-loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background-color: var(--cw-bg-surface);
+  border: 1px solid var(--cw-border-card);
+  border-radius: var(--cw-radius-md);
+  box-shadow: var(--cw-shadow-card);
+}

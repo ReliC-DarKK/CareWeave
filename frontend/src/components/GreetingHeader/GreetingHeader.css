@@ -60,6 +60,11 @@
   border-color: var(--cw-primary-border);
 }
 
+.cw-logout-btn:hover {
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+
 .cw-notification-wrap {
   position: relative;
 }
