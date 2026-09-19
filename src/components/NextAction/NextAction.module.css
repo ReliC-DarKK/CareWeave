@@ -317,3 +317,11 @@
 .dateIcon {
   color: var(--color-text-muted);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .viewDetailsButton,
+  .detailsIcon {
+    transition: none !important;
+  }
+}
+

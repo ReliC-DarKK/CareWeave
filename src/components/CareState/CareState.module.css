@@ -102,3 +102,24 @@
   font-size: var(--font-size-2xs);
   color: var(--color-text-muted);
 }
+
+.meterActiveArc {
+  animation: careStateArcFill 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes careStateArcFill {
+  from {
+    stroke-dashoffset: 235.6;
+  }
+  to {
+    stroke-dashoffset: 35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meterActiveArc {
+    animation: none !important;
+    stroke-dashoffset: 35 !important;
+  }
+}
+

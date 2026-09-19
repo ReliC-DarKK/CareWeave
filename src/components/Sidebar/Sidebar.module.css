@@ -82,13 +82,20 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   border-radius: var(--radius-sm);
-  transition: background-color 0.15s ease, color 0.15s ease;
   border-left: 3px solid transparent;
+  transition: background-color 150ms ease, color 150ms ease, border-left-color 150ms ease;
+  outline: none;
 }
 
 .navLink:hover {
   background-color: var(--color-bg-surface-subtle);
   color: var(--color-text-primary);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: -2px;
+  background-color: var(--color-bg-surface-subtle);
 }
 
 .activeLink {
@@ -158,3 +165,10 @@
   color: var(--color-text-muted);
   flex-shrink: 0;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink {
+    transition: none !important;
+  }
+}
+

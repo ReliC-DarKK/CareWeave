@@ -230,3 +230,10 @@
     padding: var(--space-xl);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .medCard {
+    transition: none !important;
+  }
+}
+

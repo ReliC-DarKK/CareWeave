@@ -90,7 +90,9 @@ export function CareAtGlance({ conditions, careState = DEMO_CARE_STATE }) {
 
             {/* Multicolored Arc Progression */}
             <path
+              className={styles.meterArcActive}
               d="M 15 80 A 65 65 0 0 1 145 80"
+              pathLength="100"
               fill="none"
               stroke="url(#glanceArcGradient)"
               strokeWidth="7"

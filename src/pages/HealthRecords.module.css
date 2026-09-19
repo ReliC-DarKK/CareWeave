@@ -648,3 +648,14 @@
     padding: var(--space-xl);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .recordCard,
+  .viewButton,
+  .uploadTriggerBtn,
+  .confirmModalBtn,
+  .cancelModalBtn {
+    transition: none !important;
+  }
+}
+

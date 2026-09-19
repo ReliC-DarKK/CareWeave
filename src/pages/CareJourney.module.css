@@ -262,3 +262,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .filterTab {
+    transition: none !important;
+  }
+}
+

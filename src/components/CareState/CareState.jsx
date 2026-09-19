@@ -41,6 +41,7 @@ export function CareState({ careState }) {
 
             {/* Restrained Indigo/Blue/Teal Active Arc Progression */}
             <path
+              className={styles.meterActiveArc}
               d="M 25 105 A 75 75 0 0 1 175 105"
               fill="none"
               stroke="url(#careStateArcGradient)"
