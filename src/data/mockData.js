@@ -159,6 +159,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "30-day blood pressure telemonitoring confirmed clinical stability at target < 130/85.",
     recordedBy: "Dr. Singh, MD",
     clinicalContext: "Cardiovascular stability verified at baseline.",
+    assignedCareLead: "Dr. Singh (Cardiology)",
+    clinicalProtocol: "Target resting BP < 130/85 mmHg. 30-day continuous telemonitoring confirmed stability.",
+    linkedRecord: {
+      id: "doc-03",
+      name: "Blood Pressure Monitoring Report",
+      type: "Cardiovascular Telemetry",
+    },
+    linkedMedication: {
+      id: "med-02",
+      name: "Amlodipine 5 mg",
+      dosage: "5 mg Daily",
+    },
   },
   {
     id: "tle-106",
@@ -173,6 +185,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "Clinical evaluation demonstrated stable performance status. Cleared for Cycle 4 pending 48h labs.",
     recordedBy: "Dr. Meera Kapoor, MD",
     clinicalContext: "Interim oncology milestone review.",
+    assignedCareLead: "Dr. Meera Kapoor (Medical Oncology)",
+    clinicalProtocol: "ECOG performance status 0. Tolerance and clinical safety clearance for Cycle 4 AC-T infusion.",
+    linkedRecord: {
+      id: "doc-01",
+      name: "Oncology Treatment Summary",
+      type: "Clinical Document",
+    },
+    linkedMedication: {
+      id: "med-03",
+      name: "Dexamethasone 8 mg",
+      dosage: "8 mg Pre-medication Protocol",
+    },
   },
   {
     id: "tle-101",
@@ -187,6 +211,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "Avg. 142 mg/dL. Morning capillary reading logged via home glucometer.",
     recordedBy: "Patient Self-Report · Glucometer Sync",
     clinicalContext: "Baseline morning reading ahead of scheduled infusion.",
+    assignedCareLead: "Dr. Rao (Endocrinology)",
+    clinicalProtocol: "Morning capillary fasting glucose log (128 mg/dL). Monitored for chemotherapy steroid synergy.",
+    linkedRecord: {
+      id: "lab-02",
+      name: "Glycated Hemoglobin (HbA1c)",
+      type: "Endocrine Diagnostic Lab",
+    },
+    linkedMedication: {
+      id: "med-01",
+      name: "Metformin 1000 mg",
+      dosage: "1000 mg BID",
+    },
   },
   {
     id: "tle-102",
@@ -201,6 +237,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "Metformin 500 mg and Amlodipine 5 mg PO taken with breakfast.",
     recordedBy: "Adherence Log",
     clinicalContext: "100% adherence verified for preceding 14-day interval.",
+    assignedCareLead: "Dr. Rao & Dr. Singh",
+    clinicalProtocol: "100% adherence verified for preceding 14-day interval. Regimen co-managed with Cardiology.",
+    linkedRecord: {
+      id: "doc-02",
+      name: "Diabetes Care Summary",
+      type: "Endocrine Care Plan",
+    },
+    linkedMedication: {
+      id: "med-01",
+      name: "Metformin 1000 mg",
+      dosage: "1000 mg BID (Co-administered with Amlodipine 5mg)",
+    },
   },
   {
     id: "tle-103",
@@ -215,6 +263,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "CBC, Comprehensive Metabolic Panel, and Liver Function scheduled at Central Lab.",
     recordedBy: "Metro Central Laboratories",
     clinicalContext: "Pre-chemo interval safety surveillance 48h prior to infusion.",
+    assignedCareLead: "Dr. Meera Kapoor (Medical Oncology)",
+    clinicalProtocol: "Mandatory pre-chemo laboratory surveillance panel (Requisition CW-8910). 8-hour fasting required.",
+    linkedRecord: {
+      id: "lab-01",
+      name: "Complete Blood Count (CBC)",
+      type: "Hematology Lab",
+    },
+    linkedMedication: {
+      id: "med-03",
+      name: "Dexamethasone 8 mg",
+      dosage: "8 mg Protocol",
+    },
   },
   {
     id: "tle-104",
@@ -229,6 +289,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "Cycle 4 Infusion and mid-treatment clinical evaluation at Cancer Pavilion Suite 4B.",
     recordedBy: "Dr. Meera Kapoor, MD",
     clinicalContext: "In-person visit. Pre-medication protocol begins 2 hours prior.",
+    assignedCareLead: "Dr. Meera Kapoor (Medical Oncology)",
+    clinicalProtocol: "Cycle 4 AC-T infusion protocol. Anti-emetic Ondansetron premedication required 2h prior.",
+    linkedRecord: {
+      id: "doc-01",
+      name: "Oncology Treatment Summary",
+      type: "Clinical Document",
+    },
+    linkedMedication: {
+      id: "med-04",
+      name: "Ondansetron 8 mg",
+      dosage: "8 mg PRN (Anti-Emetic)",
+    },
   },
   {
     id: "tle-105",
@@ -243,6 +315,18 @@ export const DEMO_TIMELINE_EVENTS = [
     summary: "Quarterly glycemic log reconciliation and post-chemotherapy steroid impact review.",
     recordedBy: "Dr. Rao, MD",
     clinicalContext: "Telehealth clinical encounter.",
+    assignedCareLead: "Dr. Rao (Endocrinology)",
+    clinicalProtocol: "Quarterly glycemic log reconciliation and post-chemotherapy steroid impact review.",
+    linkedRecord: {
+      id: "lab-04",
+      name: "Comprehensive Metabolic Panel (CMP)",
+      type: "Chemistry Lab",
+    },
+    linkedMedication: {
+      id: "med-01",
+      name: "Metformin 1000 mg",
+      dosage: "1000 mg BID",
+    },
   },
 ];
 

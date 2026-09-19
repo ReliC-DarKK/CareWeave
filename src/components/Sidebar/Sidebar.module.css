@@ -1,72 +1,79 @@
 .sidebar {
-  width: var(--sidebar-width);
-  min-width: var(--sidebar-width);
+  width: 256px;
+  min-width: 256px;
   height: 100vh;
   position: sticky;
   top: 0;
-  background-color: var(--color-bg-surface);
-  border-right: 1px solid var(--color-border-subtle);
+  background-color: #FFFFFF;
+  border-right: 1px solid #EEF2F6;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   z-index: 20;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .brand {
-  padding: var(--space-xl) var(--space-lg);
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 24px 20px 18px 20px;
+  flex-shrink: 0;
 }
 
 .brandHeader {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: 12px;
 }
 
 .brandLogo {
-  width: 36px;
-  height: 36px;
-  background-color: var(--color-accent-primary);
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.brandIcon {
-  color: #FFFFFF;
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-sm);
-  letter-spacing: 0.5px;
+.brandIconSvg {
+  width: 38px;
+  height: 38px;
+  display: block;
+}
+
+.brandTextGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .brandName {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  letter-spacing: -0.2px;
-  line-height: 1.2;
+  font-size: 19px;
+  font-weight: 700;
+  color: #1E293B;
+  letter-spacing: -0.3px;
+  line-height: 1.15;
+  margin: 0;
 }
 
 .brandTagline {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-medium);
-  margin-top: 1px;
+  font-size: 11px;
+  color: #64748B;
+  font-weight: 400;
+  margin: 3px 0 0 0;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
 }
 
 .nav {
-  flex: 1;
-  padding: var(--space-lg) var(--space-sm);
-  overflow-y: auto;
+  padding: 4px 14px;
+  flex-shrink: 0;
 }
 
 .navList {
   list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: 5px;
 }
 
 .navItem {
@@ -76,61 +83,145 @@
 .navLink {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  border-radius: var(--radius-sm);
-  border-left: 3px solid transparent;
-  transition: background-color 150ms ease, color 150ms ease, border-left-color 150ms ease;
+  gap: 14px;
+  padding: 10px 14px;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: 12px;
+  border: none;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
   outline: none;
 }
 
 .navLink:hover {
-  background-color: var(--color-bg-surface-subtle);
-  color: var(--color-text-primary);
+  background-color: #F8FAFC;
+  color: #1E293B;
 }
 
 .navLink:focus-visible {
-  outline: 2px solid var(--color-accent-primary);
+  outline: 2px solid #6366F1;
   outline-offset: -2px;
-  background-color: var(--color-bg-surface-subtle);
+  background-color: #F8FAFC;
 }
 
 .activeLink {
-  background-color: var(--color-accent-light);
-  color: var(--color-accent-primary);
-  font-weight: var(--font-weight-semibold);
-  border-left: 3px solid var(--color-accent-primary);
+  background-color: #F0EEFF;
+  color: #5B4DF5;
+  font-weight: 600;
 }
 
 .navIcon {
   flex-shrink: 0;
-  opacity: 0.85;
+  color: #64748B;
+  transition: color 150ms ease;
 }
 
 .activeLink .navIcon {
-  opacity: 1;
-  color: var(--color-accent-primary);
+  color: #5B4DF5;
+}
+
+.navIconFilled {
+  fill: currentColor;
 }
 
 .navLabel {
   letter-spacing: 0.1px;
 }
 
-.footer {
-  padding: var(--space-md) var(--space-lg);
-  border-top: 1px solid var(--color-border-subtle);
-  background-color: var(--color-bg-surface-subtle);
+/* Promo Card Banner */
+.promoCard {
+  margin: auto 14px 12px 14px;
+  background: linear-gradient(180deg, #F3F5FF 0%, #E3E8FD 100%);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  height: 168px;
+  min-height: 168px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  justify-content: flex-start;
+  padding: 16px 14px 0 14px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.promoTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 2;
+  position: relative;
+  max-width: 125px;
+}
+
+.promoLine {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1E293B;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.promoBoldLine {
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.promoIllustrationWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.promoIllustrationSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Patient Profile Footer */
+.footer {
+  padding: 10px 18px 18px 18px;
+  background-color: #FFFFFF;
+  flex-shrink: 0;
 }
 
 .patientProfile {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.patientIdentity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatarWrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.avatarSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .patientMeta {
@@ -139,30 +230,21 @@
 }
 
 .patientName {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1E293B;
+  line-height: 1.25;
 }
 
-.patientId {
-  font-size: var(--font-size-2xs);
-  color: var(--color-text-muted);
-  font-family: monospace;
-  letter-spacing: 0.3px;
+.patientRole {
+  font-size: 11.5px;
+  color: #64748B;
+  font-weight: 400;
+  margin-top: 1px;
 }
 
-.complianceNotice {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--font-size-2xs);
-  color: var(--color-text-muted);
-  padding-top: var(--space-2xs);
-  border-top: 1px dashed var(--color-border-subtle);
-}
-
-.complianceIcon {
-  color: var(--color-text-muted);
+.profileChevron {
+  color: #94A3B8;
   flex-shrink: 0;
 }
 
@@ -171,4 +253,3 @@
     transition: none !important;
   }
 }
-

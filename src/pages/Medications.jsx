@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Pill, Clock, User, Calendar, FileCheck, CheckCircle2 } from 'lucide-react';
 import { useCareData } from '../context/CareDataContext';
 import styles from './Medications.module.css';
 
 export function Medications() {
   const { medications } = useCareData();
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
+
+  useEffect(() => {
+    if (highlightId) {
+      setTimeout(() => {
+        const elem = document.getElementById(highlightId);
+        if (elem) {
+          elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 120);
+    }
+  }, [highlightId]);
 
   return (
     <div className={styles.container}>
@@ -23,7 +37,11 @@ export function Medications() {
       {/* Medication List */}
       <div className={styles.medicationsList}>
         {medications.map((med) => (
-          <article key={med.id} className={styles.medCard}>
+          <article
+            key={med.id}
+            id={med.id}
+            className={`${styles.medCard} ${highlightId === med.id ? styles.highlightedCard : ''}`}
+          >
             <div className={styles.cardMain}>
               <div className={styles.medHeaderRow}>
                 <div className={styles.nameGroup}>

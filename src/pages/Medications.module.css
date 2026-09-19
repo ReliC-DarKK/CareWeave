@@ -225,6 +225,12 @@
   color: var(--color-text-primary);
 }
 
+.highlightedCard {
+  border-color: var(--color-accent-primary) !important;
+  box-shadow: 0 0 0 2px rgba(44, 62, 107, 0.25), 0 2px 4px rgba(15, 23, 42, 0.08) !important;
+  background-color: #F8FAFC !important;
+}
+
 @media (max-width: 1024px) {
   .container {
     padding: var(--space-xl);

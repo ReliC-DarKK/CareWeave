@@ -223,14 +223,226 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  outline: none;
+}
+
+.eventMain:hover {
+  border-color: var(--color-border-medium);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.eventMain:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.eventMainExpanded {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05);
 }
 
 .titleLine {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: var(--space-sm);
+}
+
+.titleTextGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightActionGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.viewDetailsBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: #FFFFFF;
+  background-color: var(--color-accent-primary);
+  border: 1px solid var(--color-accent-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.viewDetailsBtn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.detailsChevron {
+  transition: transform 0.2s ease;
+}
+
+.detailsChevronOpen {
+  transform: rotate(90deg);
+}
+
+/* Timeline Details Drawer */
+.timelineDetailsDrawer {
+  background-color: var(--color-bg-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-md);
+  margin-top: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  cursor: default;
+  animation: timelineDrawerFade 180ms ease-out forwards;
+}
+
+@keyframes timelineDrawerFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.drawerHeading {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.eventRefTag {
+  font-family: monospace;
+  font-size: var(--font-size-2xs);
+  color: var(--color-accent-primary);
+  background-color: var(--tint-blue-bg);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+}
+
+.drawerGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm) var(--space-md);
+}
+
+.drawerItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawerItemFull {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--space-2xs);
+  border-top: 1px dashed var(--color-border-subtle);
+}
+
+.itemLabel {
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.recordLinkCard,
+.medicationLinkCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 8px 12px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.recordLinkCard:hover {
+  border-color: var(--tint-violet-accent);
+  background-color: #FAF5FF;
+  transform: translateY(-1px);
+}
+
+.medicationLinkCard:hover {
+  border-color: var(--tint-teal-accent);
+  background-color: #F0FDF4;
+  transform: translateY(-1px);
+}
+
+.recordIconBox {
+  width: 28px;
+  height: 28px;
+  background-color: var(--tint-violet-bg);
+  color: var(--tint-violet-accent);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.medIconBox {
+  width: 28px;
+  height: 28px;
+  background-color: var(--tint-teal-bg);
+  color: var(--tint-teal-accent);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.linkInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.linkTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.linkType {
+  font-size: 0.6875rem;
+  color: var(--color-accent-primary);
+  line-height: 1.2;
+}
+
+.protocolText {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin: 0;
 }
 
 .eventTitle {
@@ -327,6 +539,17 @@
   .eventFullDate {
     font-size: 0.65rem;
   }
+  .drawerGrid {
+    grid-template-columns: 1fr;
+  }
+  .drawerItemFull {
+    grid-column: span 1;
+  }
+  .titleLine {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -335,5 +558,16 @@
     opacity: 1 !important;
     transform: none !important;
   }
+  .timelineDetailsDrawer {
+    animation: none !important;
+  }
+  .recordLinkCard:hover,
+  .medicationLinkCard:hover {
+    transform: none !important;
+  }
+  .detailsChevron {
+    transition: none !important;
+  }
 }
+
 

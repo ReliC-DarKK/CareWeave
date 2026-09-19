@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   FlaskConical,
   FileText,
@@ -87,6 +87,25 @@ export function HealthRecords() {
   const [selectedPresetId, setSelectedPresetId] = useState('preset-statin');
   const [customFileName, setCustomFileName] = useState('');
   const [uploadSuccessInfo, setUploadSuccessInfo] = useState(null);
+
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
+
+  useEffect(() => {
+    if (highlightId) {
+      if (highlightId.startsWith('lab-')) {
+        setExpandedLab(highlightId);
+      } else if (highlightId.startsWith('doc-')) {
+        setExpandedDoc(highlightId);
+      }
+      setTimeout(() => {
+        const el = document.getElementById(highlightId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 120);
+    }
+  }, [highlightId]);
 
   const toggleLab = (id) => {
     setExpandedLab((prev) => (prev === id ? null : id));
@@ -233,7 +252,11 @@ export function HealthRecords() {
             const isExpanded = expandedLab === lab.id;
 
             return (
-              <article key={lab.id} className={styles.recordCard}>
+              <article
+                key={lab.id}
+                id={lab.id}
+                className={`${styles.recordCard} ${highlightId === lab.id ? styles.highlightedCard : ''}`}
+              >
                 <div className={styles.cardMainRow}>
                   <div className={styles.recordInfo}>
                     <div className={styles.titleRow}>
@@ -337,7 +360,11 @@ export function HealthRecords() {
             const isExpanded = expandedDoc === doc.id;
 
             return (
-              <article key={doc.id} className={styles.recordCard}>
+              <article
+                key={doc.id}
+                id={doc.id}
+                className={`${styles.recordCard} ${highlightId === doc.id ? styles.highlightedCard : ''}`}
+              >
                 <div className={styles.cardMainRow}>
                   <div className={styles.recordInfo}>
                     <div className={styles.titleRow}>
