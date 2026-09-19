@@ -502,6 +502,24 @@
   font-family: inherit;
 }
 
+.uploadErrorBanner {
+  background-color: var(--tint-rose-bg, #fff1f2);
+  border: 1px solid var(--tint-rose-border, #fecdd3);
+  color: var(--tint-rose-text, #831843);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.uploadErrorIcon {
+  color: var(--tint-rose-accent, #9d174d);
+  flex-shrink: 0;
+}
+
 .fileDropzone {
   border: 2px dashed var(--color-border-medium);
   border-radius: var(--radius-sm);

@@ -12,8 +12,15 @@ import {
   ArrowRight,
   Pill,
   CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 import { useCareData } from '../context/CareDataContext';
+import {
+  validateFileUpload,
+  sanitizeFileName,
+  ALLOWED_FILE_TYPES,
+  sanitizeTextInput,
+} from '../utils/validation';
 import styles from './HealthRecords.module.css';
 
 const PRESET_DOCUMENTS = [
@@ -87,6 +94,12 @@ export function HealthRecords() {
   const [selectedPresetId, setSelectedPresetId] = useState('preset-statin');
   const [customFileName, setCustomFileName] = useState('');
   const [uploadSuccessInfo, setUploadSuccessInfo] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+
+  const closeUploadModal = () => {
+    setIsUploadModalOpen(false);
+    setUploadError(null);
+  };
 
   const toggleLab = (id) => {
     setExpandedLab((prev) => (prev === id ? null : id));
@@ -102,11 +115,11 @@ export function HealthRecords() {
   const activeDocDetails =
     selectedPresetId === 'custom' && customFileName
       ? {
-          title: customFileName.replace(/\.[^/.]+$/, '') || 'Uploaded Clinical Document',
+          title: sanitizeTextInput(customFileName.replace(/\.[^/.]+$/, '') || 'Uploaded Clinical Document'),
           type: 'External Health Document',
           author: 'Attending Physician',
-          description: `Uploaded health record document: ${customFileName}. Reconciled clinical prescriptions.`,
-          content: `Document processed: ${customFileName}. Extracted prescription verified against multi-condition care plan. Cross-specialty clearance indicated for current longitudinal regimen.`,
+          description: sanitizeTextInput(`Uploaded health record document: ${customFileName}. Reconciled clinical prescriptions.`),
+          content: sanitizeTextInput(`Document processed: ${customFileName}. Extracted prescription verified against multi-condition care plan. Cross-specialty clearance indicated for current longitudinal regimen.`),
           extractedMedication: {
             name: 'Atorvastatin',
             dosage: '20 mg',
@@ -123,10 +136,20 @@ export function HealthRecords() {
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setCustomFileName(file.name);
-      setSelectedPresetId('custom');
+    if (!file) return;
+
+    const validation = validateFileUpload(file);
+    if (!validation.isValid) {
+      setUploadError(validation.error);
+      e.target.value = ''; // Reset the file input
+      return;
     }
+
+    // Clear any previous error and sanitize file name
+    setUploadError(null);
+    const sanitized = sanitizeFileName(file.name);
+    setCustomFileName(sanitized);
+    setSelectedPresetId('custom');
   };
 
   const handleConfirmUpload = () => {
@@ -135,29 +158,31 @@ export function HealthRecords() {
 
     const newDoc = {
       id: docId,
-      title: activeDocDetails.title,
+      title: sanitizeTextInput(activeDocDetails.title),
       date: 'Today, Sep 18, 2026',
-      type: activeDocDetails.type,
-      author: activeDocDetails.author,
-      description: activeDocDetails.description,
-      content: activeDocDetails.content,
+      type: sanitizeTextInput(activeDocDetails.type),
+      author: sanitizeTextInput(activeDocDetails.author),
+      description: sanitizeTextInput(activeDocDetails.description),
+      content: sanitizeTextInput(activeDocDetails.content),
       isUploaded: true,
-      extractedMedication: `${activeDocDetails.extractedMedication.name} ${activeDocDetails.extractedMedication.dosage}`,
+      extractedMedication: sanitizeTextInput(
+        `${activeDocDetails.extractedMedication.name} ${activeDocDetails.extractedMedication.dosage}`
+      ),
     };
 
     const newMed = {
       id: medId,
-      name: activeDocDetails.extractedMedication.name,
-      dosage: activeDocDetails.extractedMedication.dosage,
-      frequency: activeDocDetails.extractedMedication.frequency,
-      timing: activeDocDetails.extractedMedication.timing,
-      condition: activeDocDetails.extractedMedication.condition,
-      prescriber: activeDocDetails.extractedMedication.prescriber,
+      name: sanitizeTextInput(activeDocDetails.extractedMedication.name),
+      dosage: sanitizeTextInput(activeDocDetails.extractedMedication.dosage),
+      frequency: sanitizeTextInput(activeDocDetails.extractedMedication.frequency),
+      timing: sanitizeTextInput(activeDocDetails.extractedMedication.timing),
+      condition: sanitizeTextInput(activeDocDetails.extractedMedication.condition),
+      prescriber: sanitizeTextInput(activeDocDetails.extractedMedication.prescriber),
       refillsRemaining: activeDocDetails.extractedMedication.refillsRemaining,
-      nextRefill: activeDocDetails.extractedMedication.nextRefill,
-      status: activeDocDetails.extractedMedication.status,
+      nextRefill: sanitizeTextInput(activeDocDetails.extractedMedication.nextRefill),
+      status: sanitizeTextInput(activeDocDetails.extractedMedication.status),
       isUploaded: true,
-      sourceDocument: activeDocDetails.title,
+      sourceDocument: sanitizeTextInput(activeDocDetails.title),
     };
 
     addUploadedRecordAndMedication(newDoc, newMed);
@@ -167,7 +192,7 @@ export function HealthRecords() {
       medDosage: newMed.dosage,
     });
     setExpandedDoc(docId); // Automatically expand the new document
-    setIsUploadModalOpen(false);
+    closeUploadModal();
   };
 
   return (
@@ -403,7 +428,7 @@ export function HealthRecords() {
           aria-modal="true"
           aria-labelledby="upload-modal-title"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setIsUploadModalOpen(false);
+            if (e.target === e.currentTarget) closeUploadModal();
           }}
         >
           <div className={styles.modalCard}>
@@ -419,7 +444,7 @@ export function HealthRecords() {
               <button
                 type="button"
                 className={styles.modalCloseBtn}
-                onClick={() => setIsUploadModalOpen(false)}
+                onClick={closeUploadModal}
                 aria-label="Close upload dialog"
               >
                 <X size={18} aria-hidden="true" />
@@ -427,13 +452,21 @@ export function HealthRecords() {
             </div>
 
             <div className={styles.modalBody}>
+              {/* Validation Error Alert Banner */}
+              {uploadError && (
+                <div className={styles.uploadErrorBanner} role="alert" aria-live="assertive">
+                  <AlertCircle size={16} className={styles.uploadErrorIcon} aria-hidden="true" />
+                  <span>{uploadError}</span>
+                </div>
+              )}
+
               {/* File Dropzone */}
               <div className={styles.fileDropzone}>
                 <input
                   type="file"
                   className={styles.fileInputHidden}
                   onChange={handleFileUpload}
-                  accept=".pdf,.txt,.doc,.docx,image/*"
+                  accept=".pdf,.png,.jpg,.jpeg"
                   id="health-record-file-input"
                 />
                 <UploadCloud size={28} color="var(--color-accent-primary)" aria-hidden="true" />
@@ -449,7 +482,7 @@ export function HealthRecords() {
                   )}
                 </p>
                 <span style={{ fontSize: '0.6875rem', color: 'var(--color-text-muted)' }}>
-                  Supports PDF, scanned clinical notes, or lab requisitions
+                  Supports PDF, PNG, and JPEG documents up to 5 MB
                 </span>
               </div>
 
@@ -465,6 +498,7 @@ export function HealthRecords() {
                   onChange={(e) => {
                     setSelectedPresetId(e.target.value);
                     setCustomFileName('');
+                    setUploadError(null);
                   }}
                 >
                   {PRESET_DOCUMENTS.map((preset) => (
@@ -509,7 +543,7 @@ export function HealthRecords() {
               <button
                 type="button"
                 className={styles.cancelModalBtn}
-                onClick={() => setIsUploadModalOpen(false)}
+                onClick={closeUploadModal}
               >
                 Cancel
               </button>

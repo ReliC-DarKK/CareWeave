@@ -131,17 +131,37 @@
 .patientProfile {
   display: flex;
   align-items: center;
+  gap: var(--space-sm);
+}
+
+.patientAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.userIcon {
+  color: var(--color-accent-primary);
 }
 
 .patientMeta {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .patientName {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .patientId {
@@ -149,6 +169,38 @@
   color: var(--color-text-muted);
   font-family: monospace;
   letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.signOutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  font-family: inherit;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  width: 100%;
+}
+
+.signOutButton:hover {
+  background-color: var(--tint-rose-bg);
+  color: var(--tint-rose-text);
+  border-color: var(--tint-rose-border);
+}
+
+.signOutButton:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 1px;
 }
 
 .complianceNotice {

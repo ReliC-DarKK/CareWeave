@@ -9,7 +9,10 @@ import {
   Users,
   MessageSquare,
   ShieldCheck,
+  LogOut,
+  UserCheck,
 } from 'lucide-react';
+import { useAuth } from '../../auth/AuthContext';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
@@ -23,6 +26,11 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar({ patient }) {
+  const { user, logout } = useAuth();
+
+  const displayName = user?.name || (patient ? `${patient.firstName} ${patient.lastName}` : 'User');
+  const displayRole = user?.role ? `Role: ${user.role}` : (patient?.recordNumber || '');
+
   return (
     <aside className={styles.sidebar} aria-label="Main Navigation">
       <div className={styles.brand}>
@@ -61,11 +69,26 @@ export function Sidebar({ patient }) {
 
       <div className={styles.footer}>
         <div className={styles.patientProfile}>
+          <div className={styles.patientAvatar} aria-hidden="true">
+            <UserCheck size={18} className={styles.userIcon} />
+          </div>
           <div className={styles.patientMeta}>
-            <span className={styles.patientName}>{patient.firstName} {patient.lastName}</span>
-            <span className={styles.patientId}>{patient.recordNumber}</span>
+            <span className={styles.patientName}>{displayName}</span>
+            <span className={styles.patientId}>{displayRole}</span>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={logout}
+          className={styles.signOutButton}
+          title="Sign out of CareWeave"
+          aria-label="Sign out of CareWeave"
+        >
+          <LogOut size={14} aria-hidden="true" />
+          <span>Sign Out</span>
+        </button>
+
         <div className={styles.complianceNotice}>
           <ShieldCheck size={14} className={styles.complianceIcon} aria-hidden="true" />
           <span>Fictional Demo Environment</span>
@@ -74,3 +97,4 @@ export function Sidebar({ patient }) {
     </aside>
   );
 }
+
