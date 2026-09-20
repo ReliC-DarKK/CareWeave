@@ -190,6 +190,14 @@ export async function extractMedicalInformation(documentId, options = {}) {
       if (!associatedPatient) {
         associatedPatient = patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, structuredData.patient);
       }
+      // Fallback: Ensure document is linked to the authenticated user's primary patient profile
+      if (!associatedPatient) {
+        const userPatients = databaseService.getPatientsByOwner(doc.ownerEmail);
+        if (userPatients.length > 0) {
+          databaseService.updateDocumentPatientId(documentId, userPatients[0].id);
+          associatedPatient = userPatients[0];
+        }
+      }
     } catch (patientErr) {
       console.warn(`Patient association notice for ${documentId}: ${patientErr.message}`);
     }

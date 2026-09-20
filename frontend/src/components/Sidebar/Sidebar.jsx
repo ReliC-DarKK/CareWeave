@@ -333,6 +333,7 @@ export default function Sidebar({
   patientProfile,
   currentPath = '/home',
   onNavigate,
+  user,
 }) {
   const renderNavIcon = (icon, isActive) => {
     switch (icon) {
@@ -545,7 +546,7 @@ export default function Sidebar({
 
             <div className="cw-patient-meta">
               <span className="cw-patient-name">
-                {patientProfile?.name || 'Aditi Sharma'}
+                {patientProfile?.name || user?.name || 'Patient'}
               </span>
               <span className="cw-patient-role">Patient</span>
             </div>

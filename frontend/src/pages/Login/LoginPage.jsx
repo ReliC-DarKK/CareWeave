@@ -42,27 +42,52 @@ function CareWeaveLogo() {
   );
 }
 
+const PROTOTYPE_USERS = [
+  {
+    name: 'Aditi Sharma',
+    preferredName: 'Aditi',
+    email: 'aditi@careweave.com',
+    password: 'careweave123',
+    role: 'Patient',
+    badge: 'Active Journey',
+    initials: 'AS',
+    color: '#8B5CF6',
+  },
+  {
+    name: 'Rohan Mehta',
+    preferredName: 'Rohan',
+    email: 'rohan@careweave.com',
+    password: 'careweave123',
+    role: 'Patient',
+    badge: 'Personal Records',
+    initials: 'RM',
+    color: '#3B82F6',
+  },
+  {
+    name: 'Sarah Jenkins',
+    preferredName: 'Sarah',
+    email: 'sarah@careweave.com',
+    password: 'careweave123',
+    role: 'Patient',
+    badge: 'Personal Records',
+    initials: 'SJ',
+    color: '#10B981',
+  },
+];
+
 export default function LoginPage({ onLoginSuccess, theme = 'light', onToggleTheme }) {
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('aditi@careweave.com');
+  const [password, setPassword] = useState('careweave123');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const performLogin = async (loginEmail, loginPassword) => {
     setErrorMessage('');
-
-    // Field validation
-    if (!email.trim() || !password) {
-      setErrorMessage('Please enter both your email address and password.');
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      await login(email.trim(), password);
+      await login(loginEmail.trim(), loginPassword);
       if (onLoginSuccess) {
         onLoginSuccess();
       }
@@ -71,6 +96,21 @@ export default function LoginPage({ onLoginSuccess, theme = 'light', onToggleThe
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email.trim() || !password) {
+      setErrorMessage('Please enter both your email address and password.');
+      return;
+    }
+    await performLogin(email, password);
+  };
+
+  const handleQuickLogin = async (user) => {
+    setEmail(user.email);
+    setPassword(user.password);
+    await performLogin(user.email, user.password);
   };
 
   return (
@@ -120,7 +160,7 @@ export default function LoginPage({ onLoginSuccess, theme = 'light', onToggleThe
           {/* Heading & Subtitle */}
           <div className="cw-login-heading-group">
             <h2 className="cw-login-heading">Welcome back</h2>
-            <p className="cw-login-subtext">Sign in to access your care journey.</p>
+            <p className="cw-login-subtext">Sign in to access your personalized care journey.</p>
           </div>
 
           {/* Error Banner */}
@@ -134,6 +174,39 @@ export default function LoginPage({ onLoginSuccess, theme = 'light', onToggleThe
               <span>{errorMessage}</span>
             </div>
           )}
+
+          {/* 1-Click Quick Account Switcher */}
+          <div className="cw-quick-accounts-section">
+            <span className="cw-quick-accounts-title">Quick Select User Account:</span>
+            <div className="cw-quick-accounts-list">
+              {PROTOTYPE_USERS.map((u) => {
+                const isCurrent = email.toLowerCase() === u.email.toLowerCase();
+                return (
+                  <button
+                    key={u.email}
+                    type="button"
+                    className={`cw-quick-account-card ${isCurrent ? 'active' : ''}`}
+                    onClick={() => handleQuickLogin(u)}
+                    disabled={isSubmitting}
+                    aria-label={`Log in as ${u.name}`}
+                  >
+                    <div className="cw-quick-avatar" style={{ backgroundColor: u.color }}>
+                      {u.initials}
+                    </div>
+                    <div className="cw-quick-details">
+                      <span className="cw-quick-name">{u.name}</span>
+                      <span className="cw-quick-email">{u.email}</span>
+                    </div>
+                    <span className="cw-quick-badge">{u.badge}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="cw-login-divider">
+            <span>or sign in manually</span>
+          </div>
 
           {/* Login Form */}
           <form className="cw-login-form" onSubmit={handleSubmit} noValidate>
@@ -184,8 +257,8 @@ export default function LoginPage({ onLoginSuccess, theme = 'light', onToggleThe
 
           {/* Prototype credentials hint */}
           <div className="cw-login-hint">
-            <span>Development credentials:</span>
-            <code>demo@example.com / careweave123</code>
+            <span>Password for all accounts:</span>
+            <code>careweave123</code>
           </div>
         </div>
       </div>

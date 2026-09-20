@@ -9,7 +9,11 @@ export default function GreetingHeader({
   onLogout,
   user,
 }) {
-  const preferredName = patientProfile?.preferredName || patientProfile?.name?.split(' ')[0] || 'Aditi';
+  const preferredName =
+    user?.preferredName ||
+    patientProfile?.preferredName ||
+    (user?.name ? user.name.split(' ')[0] : null) ||
+    (patientProfile?.name ? patientProfile.name.split(' ')[0] : 'Patient');
 
   return (
     <header className="cw-header">

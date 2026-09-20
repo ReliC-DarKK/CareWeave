@@ -38,8 +38,8 @@ export const PROCESSING_STATUS = {
 const PDF_MIME = 'application/pdf';
 const IMAGE_MIMES = ['image/jpeg', 'image/png'];
 
-// Strict document ID format: doc_ followed by a UUID (hex + hyphens)
-const DOCUMENT_ID_PATTERN = /^doc_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
+// Safe document ID format: doc_ followed by UUID or alphanumeric slug
+const DOCUMENT_ID_PATTERN = /^doc_[a-zA-Z0-9_-]{3,64}$/;
 
 // ──────────────────────────────────────────────
 // Validation

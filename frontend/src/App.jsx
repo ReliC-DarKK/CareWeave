@@ -60,10 +60,11 @@ function AppContent({ theme, onToggleTheme }) {
         selected = patients.find((p) => p.id === activePatientId);
       }
       if (!selected) {
-        // Deterministic preference: matching Aditi Sharma, or patient with documents, or sort by name
-        selected = patients.find((p) => p.name.toLowerCase().includes('aditi')) ||
+        // Deterministic preference: match logged in user first
+        const userFirstName = (user?.preferredName || user?.name?.split(' ')[0] || '').toLowerCase();
+        selected = (userFirstName && patients.find((p) => p.name.toLowerCase().includes(userFirstName))) ||
                    patients.find((p) => p.documentCount > 0) ||
-                   [...patients].sort((a, b) => a.name.localeCompare(b.name))[0];
+                   patients[0];
       }
 
       if (selected) {
@@ -73,7 +74,7 @@ function AppContent({ theme, onToggleTheme }) {
     } catch (err) {
       console.error('Error resolving active patient in App:', err);
     }
-  }, [isAuthenticated, activePatientId]);
+  }, [isAuthenticated, activePatientId, user]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -82,7 +83,7 @@ function AppContent({ theme, onToggleTheme }) {
       setActivePatient(null);
       setActivePatientId(null);
     }
-  }, [isAuthenticated, resolveActivePatient]);
+  }, [isAuthenticated, user?.email, resolveActivePatient]);
 
   const handlePatientAssociated = useCallback((newPatientId) => {
     if (newPatientId && !activePatientId) {
@@ -122,13 +123,25 @@ function AppContent({ theme, onToggleTheme }) {
   }
 
   const handleLogout = () => {
+    setActivePatient(null);
+    setActivePatientId(null);
     logout();
     navigateTo('/');
   };
 
   const currentPatientProfile = activePatient
-    ? { ...patientProfile, name: activePatient.name }
-    : patientProfile;
+    ? {
+        ...patientProfile,
+        name: activePatient.name,
+        preferredName: activePatient.name.split(' ')[0],
+      }
+    : (user?.name
+        ? {
+            ...patientProfile,
+            name: user.name,
+            preferredName: user.preferredName || user.name.split(' ')[0],
+          }
+        : patientProfile);
 
   // Route Switcher
   const renderCurrentPage = () => {
@@ -226,6 +239,7 @@ function AppContent({ theme, onToggleTheme }) {
         patientProfile={currentPatientProfile}
         currentPath={currentPath}
         onNavigate={navigateTo}
+        user={user}
       />
       {renderCurrentPage()}
     </div>

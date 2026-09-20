@@ -77,6 +77,14 @@ router.post(
         }
       }
 
+      // Default to authenticated user's primary patient profile
+      if (!assignedPatientId) {
+        const userPatients = databaseService.getPatientsByOwner(req.user.email);
+        if (userPatients.length > 0) {
+          assignedPatientId = userPatients[0].id;
+        }
+      }
+
       // Register document in persistent SQLite storage
       registerDocument({
         id: documentId,

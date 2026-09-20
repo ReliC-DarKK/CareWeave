@@ -176,7 +176,7 @@ export const databaseService = {
   getDocumentsByOwner(ownerEmail, patientId = null) {
     const db = getDb();
     if (patientId) {
-      const rows = db.prepare('SELECT * FROM documents WHERE owner_email = ? AND patient_id = ? ORDER BY uploaded_at DESC').all(ownerEmail, patientId);
+      const rows = db.prepare('SELECT * FROM documents WHERE owner_email = ? AND (patient_id = ? OR patient_id IS NULL) ORDER BY uploaded_at DESC').all(ownerEmail, patientId);
       return rows.map(mapDocumentRow);
     }
     const rows = db.prepare('SELECT * FROM documents WHERE owner_email = ? ORDER BY uploaded_at DESC').all(ownerEmail);

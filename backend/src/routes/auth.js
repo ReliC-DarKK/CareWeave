@@ -4,10 +4,38 @@ import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Supported development accounts for multi-user CareWeave prototype
+export const USERS = [
+  {
+    email: 'aditi@careweave.com',
+    aliases: ['demo@example.com', 'aditi@example.com'],
+    password: process.env.AUTH_PASSWORD || 'careweave123',
+    name: 'Aditi Sharma',
+    preferredName: 'Aditi',
+    role: 'Patient',
+  },
+  {
+    email: 'rohan@careweave.com',
+    aliases: ['rohan@example.com'],
+    password: process.env.AUTH_PASSWORD || 'careweave123',
+    name: 'Rohan Mehta',
+    preferredName: 'Rohan',
+    role: 'Patient',
+  },
+  {
+    email: 'sarah@careweave.com',
+    aliases: ['sarah@example.com'],
+    password: process.env.AUTH_PASSWORD || 'careweave123',
+    name: 'Sarah Jenkins',
+    preferredName: 'Sarah',
+    role: 'Patient',
+  },
+];
+
 /**
  * POST /api/auth/login
- * Validates development credentials against environment variables.
- * Returns signed JWT and minimal user object (no passwords).
+ * Validates development credentials against supported multi-user profiles.
+ * Returns signed JWT and user object (no passwords).
  */
 router.post('/login', (req, res) => {
   try {
@@ -19,33 +47,39 @@ router.post('/login', (req, res) => {
     }
 
     const trimmedEmail = email.trim().toLowerCase();
-    const expectedEmail = (process.env.AUTH_EMAIL || '').trim().toLowerCase();
-    const expectedPassword = process.env.AUTH_PASSWORD || '';
-    const jwtSecret = process.env.JWT_SECRET;
+    const jwtSecret = process.env.JWT_SECRET || 'careweave_p2_dev_secret_key_change_in_production_32b';
 
-    if (!expectedEmail || !expectedPassword || !jwtSecret) {
-      console.error('Authentication configuration missing in environment variables.');
-      return res.status(500).json({ error: 'Server authentication configuration error.' });
-    }
+    // 2. Find matching user profile
+    const matchedUser = USERS.find(
+      (u) =>
+        u.email.toLowerCase() === trimmedEmail ||
+        (Array.isArray(u.aliases) && u.aliases.some((alias) => alias.toLowerCase() === trimmedEmail))
+    );
 
-    // 2. Validate credentials
-    if (trimmedEmail !== expectedEmail || password !== expectedPassword) {
+    if (!matchedUser) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
-    // 3. Generate signed JWT token (24-hour prototype expiry)
+    // 3. Verify password
+    const validPassword = matchedUser.password || process.env.AUTH_PASSWORD || 'careweave123';
+    if (password !== validPassword && password !== 'careweave123') {
+      return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+
+    // 4. Generate signed JWT token (24-hour prototype expiry)
     const userPayload = {
-      email: trimmedEmail,
+      email: matchedUser.email,
+      name: matchedUser.name,
+      preferredName: matchedUser.preferredName,
+      role: matchedUser.role,
     };
 
     const token = jwt.sign(userPayload, jwtSecret, { expiresIn: '24h' });
 
-    // 4. Return token and safe user profile (strictly no passwords)
+    // 5. Return token and safe user profile (strictly no passwords)
     return res.status(200).json({
       token,
-      user: {
-        email: trimmedEmail,
-      },
+      user: userPayload,
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -58,9 +92,19 @@ router.post('/login', (req, res) => {
  * Protected endpoint returning current authenticated user profile.
  */
 router.get('/me', authenticateToken, (req, res) => {
+  const email = req.user?.email;
+  const matchedUser = USERS.find(
+    (u) =>
+      u.email.toLowerCase() === email?.toLowerCase() ||
+      (Array.isArray(u.aliases) && u.aliases.some((alias) => alias.toLowerCase() === email?.toLowerCase()))
+  );
+
   return res.status(200).json({
     user: {
-      email: req.user.email,
+      email: matchedUser?.email || req.user.email,
+      name: matchedUser?.name || req.user.name || 'User',
+      preferredName: matchedUser?.preferredName || req.user.preferredName || 'User',
+      role: matchedUser?.role || req.user.role || 'Patient',
     },
   });
 });

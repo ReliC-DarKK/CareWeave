@@ -171,10 +171,11 @@ export default function HomePage({
           return;
         }
 
-        // Deterministic: prefer Aditi Sharma, or patient with documents, or sort by name
-        targetPatient = patients.find((p) => p.name.toLowerCase().includes('aditi')) ||
+        // Match user's name first
+        const userFirstName = (user?.preferredName || user?.name?.split(' ')[0] || '').toLowerCase();
+        targetPatient = (userFirstName && patients.find((p) => p.name.toLowerCase().includes(userFirstName))) ||
                         patients.find((p) => p.documentCount > 0) ||
-                        [...patients].sort((a, b) => a.name.localeCompare(b.name))[0];
+                        patients[0];
       }
 
       setCurrentPatient(targetPatient);
@@ -220,7 +221,7 @@ export default function HomePage({
     } finally {
       setIsJourneyLoading(false);
     }
-  }, [activePatient, setActivePatientId]);
+  }, [activePatient, setActivePatientId, user]);
 
   useEffect(() => {
     loadCareJourney();
@@ -230,7 +231,11 @@ export default function HomePage({
     <main className="cw-home-page" id="main-content">
       {/* 1. Greeting Header with Theme Toggle + Logout */}
       <GreetingHeader
-        patientProfile={currentPatient ? { ...patientProfile, name: currentPatient.name } : patientProfile}
+        patientProfile={
+          currentPatient
+            ? { ...patientProfile, name: currentPatient.name, preferredName: currentPatient.name.split(' ')[0] }
+            : (user ? { ...patientProfile, name: user.name, preferredName: user.preferredName || user.name.split(' ')[0] } : patientProfile)
+        }
         theme={theme}
         onToggleTheme={onToggleTheme}
         onLogout={onLogout}

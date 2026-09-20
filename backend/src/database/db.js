@@ -121,8 +121,64 @@ export function initDatabase(customPath) {
   }
   db.exec('CREATE INDEX IF NOT EXISTS idx_documents_patient ON documents(patient_id);');
 
+  // Seed default patient profiles for multi-user support
+  seedDevelopmentUsersAndPatients(db);
+
   dbInstance = db;
   return dbInstance;
+}
+
+/**
+ * Seed and migrate default patient profiles for development accounts:
+ * - Aditi Sharma (aditi@careweave.com)
+ * - Rohan Mehta (rohan@careweave.com)
+ * - Sarah Jenkins (sarah@careweave.com)
+ * @param {Database.Database} db
+ */
+export function seedDevelopmentUsersAndPatients(db) {
+  try {
+    const now = new Date().toISOString();
+
+    // 1. Migrate any legacy records from demo@example.com to aditi@careweave.com
+    db.prepare(`UPDATE patients SET owner_email = 'aditi@careweave.com' WHERE owner_email = 'demo@example.com'`).run();
+    db.prepare(`UPDATE documents SET owner_email = 'aditi@careweave.com' WHERE owner_email = 'demo@example.com'`).run();
+
+    // 2. Ensure Aditi Sharma exists
+    const aditi = db.prepare(`SELECT * FROM patients WHERE owner_email = 'aditi@careweave.com' AND name LIKE '%Aditi%'`).get();
+    let aditiId = aditi?.id;
+    if (!aditi) {
+      aditiId = 'pat_aditi_sharma_01';
+      db.prepare(`
+        INSERT INTO patients (id, owner_email, name, date_of_birth, identifier, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(aditiId, 'aditi@careweave.com', 'Aditi Sharma', '1985-06-15', 'MRN-ADITI-01', now, now);
+    }
+
+    // Link any orphaned documents belonging to aditi to her primary patient record
+    if (aditiId) {
+      db.prepare(`UPDATE documents SET patient_id = ? WHERE owner_email = 'aditi@careweave.com' AND patient_id IS NULL`).run(aditiId);
+    }
+
+    // 3. Ensure Rohan Mehta exists
+    const rohan = db.prepare(`SELECT * FROM patients WHERE owner_email = 'rohan@careweave.com'`).get();
+    if (!rohan) {
+      db.prepare(`
+        INSERT INTO patients (id, owner_email, name, date_of_birth, identifier, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run('pat_rohan_mehta_01', 'rohan@careweave.com', 'Rohan Mehta', '1988-04-12', 'MRN-ROHAN-01', now, now);
+    }
+
+    // 4. Ensure Sarah Jenkins exists
+    const sarah = db.prepare(`SELECT * FROM patients WHERE owner_email = 'sarah@careweave.com'`).get();
+    if (!sarah) {
+      db.prepare(`
+        INSERT INTO patients (id, owner_email, name, date_of_birth, identifier, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run('pat_sarah_jenkins_01', 'sarah@careweave.com', 'Sarah Jenkins', '1992-09-25', 'MRN-SARAH-01', now, now);
+    }
+  } catch (err) {
+    console.warn('Notice: seedDevelopmentUsersAndPatients info:', err.message);
+  }
 }
 
 /**

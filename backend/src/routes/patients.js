@@ -13,8 +13,8 @@ import { careJourneyService } from '../services/careJourneyService.js';
 
 const router = express.Router();
 
-// Strict patient ID format: pat_ followed by a UUID
-const PATIENT_ID_PATTERN = /^pat_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
+// Safe patient ID format: pat_ followed by UUID or alphanumeric slug
+const PATIENT_ID_PATTERN = /^pat_[a-zA-Z0-9_-]{3,64}$/;
 
 /**
  * Validate patient ID format to prevent traversal/injection
