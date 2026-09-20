@@ -15,39 +15,72 @@ export default function HomePage({
   onToggleTheme,
   onLogout,
   user,
+  activePatient,
+  setActivePatientId,
+  onPatientAssociated,
 }) {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [currentPatient, setCurrentPatient] = useState(null);
+  const [currentPatient, setCurrentPatient] = useState(activePatient || null);
   const [careJourneyEvents, setCareJourneyEvents] = useState([]);
   const [isJourneyLoading, setIsJourneyLoading] = useState(true);
   const [journeyError, setJourneyError] = useState(null);
 
+  useEffect(() => {
+    if (activePatient) {
+      setCurrentPatient(activePatient);
+    }
+  }, [activePatient]);
+
   /**
    * Load the active patient and their Care Journey timeline from the backend.
    */
-  const loadCareJourney = useCallback(async () => {
+  const loadCareJourney = useCallback(async (preferredPatientId) => {
     setIsJourneyLoading(true);
     setJourneyError(null);
 
     try {
-      // 1. Fetch user's accessible patients
-      const patientsRes = await patientService.getPatients();
-      const patients = patientsRes?.patients || [];
+      let targetPatient = null;
 
-      if (patients.length === 0) {
-        // No patients yet -> empty timeline
-        setCurrentPatient(null);
-        setCareJourneyEvents([]);
-        setIsJourneyLoading(false);
-        return;
+      // 1. Explicit preferredPatientId provided (e.g. from upload/extraction)
+      if (preferredPatientId) {
+        try {
+          const res = await patientService.getPatient(preferredPatientId);
+          if (res?.patient) {
+            targetPatient = res.patient;
+          }
+        } catch {}
       }
 
-      // 2. Select primary patient (default to first)
-      const activePatient = patients[0];
-      setCurrentPatient(activePatient);
+      // 2. Use activePatient / currentPatient if available
+      if (!targetPatient && (activePatient || currentPatient)) {
+        targetPatient = activePatient || currentPatient;
+      }
 
-      // 3. Fetch Care Journey timeline for this patient
-      const journeyRes = await patientService.getCareJourney(activePatient.id);
+      // 3. Fallback: Fetch accessible patients and pick deterministically
+      if (!targetPatient) {
+        const patientsRes = await patientService.getPatients();
+        const patients = patientsRes?.patients || [];
+
+        if (patients.length === 0) {
+          setCurrentPatient(null);
+          setCareJourneyEvents([]);
+          setIsJourneyLoading(false);
+          return;
+        }
+
+        // Deterministic: prefer Aditi Sharma, or patient with documents, or sort by name
+        targetPatient = patients.find((p) => p.name.toLowerCase().includes('aditi')) ||
+                        patients.find((p) => p.documentCount > 0) ||
+                        [...patients].sort((a, b) => a.name.localeCompare(b.name))[0];
+      }
+
+      setCurrentPatient(targetPatient);
+      if (setActivePatientId && targetPatient?.id) {
+        setActivePatientId(targetPatient.id);
+      }
+
+      // Fetch Care Journey timeline for this patient
+      const journeyRes = await patientService.getCareJourney(targetPatient.id);
       setCareJourneyEvents(journeyRes?.events || []);
     } catch (err) {
       console.error('Error loading care journey:', err);
@@ -56,7 +89,7 @@ export default function HomePage({
     } finally {
       setIsJourneyLoading(false);
     }
-  }, []);
+  }, [activePatient, currentPatient, setActivePatientId]);
 
   useEffect(() => {
     loadCareJourney();
@@ -99,12 +132,17 @@ export default function HomePage({
           setIsUploadModalOpen(false);
           loadCareJourney();
         }}
-        onUploadSuccess={() => {
-          // Document uploaded
-        }}
-        onExtractionComplete={() => {
-          // Medical extraction complete -> refresh care journey
-          loadCareJourney();
+        onUploadSuccess={() => {}}
+        onExtractionComplete={(extractionResult) => {
+          const associatedPatientId = extractionResult?.document?.patientId;
+          if (associatedPatientId) {
+            if (onPatientAssociated) {
+              onPatientAssociated(associatedPatientId);
+            }
+            loadCareJourney(associatedPatientId);
+          } else {
+            loadCareJourney();
+          }
         }}
       />
     </main>

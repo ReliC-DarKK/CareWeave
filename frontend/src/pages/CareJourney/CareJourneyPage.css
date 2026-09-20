@@ -1,0 +1,7 @@
+.cw-care-journey-page {
+  background: var(--color-bg, #f8fafc);
+}
+
+.cw-care-journey-page .cw-page-content-wrapper {
+  margin-top: 8px;
+}

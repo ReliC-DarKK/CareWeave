@@ -278,6 +278,50 @@ export const patientService = {
       },
     };
   },
+
+  /**
+   * Retrieve all medications across all persisted documents for a patient.
+   * Grounded in source extractions, with exact provenance and zero clinical inferences.
+   *
+   * @param {string} patientId
+   * @param {string} ownerEmail
+   * @returns {object[]|null} Array of medications or null if unauthorized/not found
+   */
+  getMedicationsForPatient(patientId, ownerEmail) {
+    const patient = databaseService.getPatientById(patientId);
+    if (!patient || patient.ownerEmail !== ownerEmail) {
+      return null;
+    }
+
+    const rawDocs = databaseService.getDocumentsByPatientId(patientId);
+    const medications = [];
+
+    for (const doc of rawDocs) {
+      const ext = databaseService.getExtractionByDocumentId(doc.id);
+      if (!ext || !Array.isArray(ext.medications)) continue;
+
+      ext.medications.forEach((m, idx) => {
+        medications.push({
+          id: `med_${doc.id}_${idx}`,
+          name: m.name,
+          dose: m.dose || null,
+          unit: m.unit || null,
+          frequency: m.frequency || null,
+          route: m.route || null,
+          duration: m.duration || null,
+          instructions: m.instructions || null,
+          provenance: {
+            documentId: doc.id,
+            originalName: doc.originalName,
+            documentDate: ext.documentDate || null,
+            reportId: ext.reportId || null,
+          },
+        });
+      });
+    }
+
+    return medications;
+  },
 };
 
 export default patientService;

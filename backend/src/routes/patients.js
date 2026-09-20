@@ -163,4 +163,54 @@ router.get('/:patientId/care-journey', authenticateToken, (req, res) => {
   }
 });
 
+/**
+ * GET /api/patients/:patientId/medications
+ * Protected endpoint returning all factual medications extracted from documents for a patient.
+ * Strictly verifies ownership against authenticated user JWT.
+ * Returns 400 for malformed ID, 404 for nonexistent patient, 403 for cross-user access.
+ */
+router.get('/:patientId/medications', authenticateToken, (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    // 1. Validate ID format
+    if (!isValidPatientId(patientId)) {
+      return res.status(400).json({
+        error: 'Invalid patient identifier format.',
+      });
+    }
+
+    const ownerEmail = req.user.email;
+
+    // 2. Verify existence
+    const patient = patientService.getPatientById(patientId);
+    if (!patient) {
+      return res.status(404).json({
+        error: 'Patient not found.',
+      });
+    }
+
+    // 3. Verify ownership
+    if (patient.ownerEmail !== ownerEmail) {
+      return res.status(403).json({
+        error: 'You do not have permission to view this patient medications.',
+      });
+    }
+
+    // 4. Retrieve medications with provenance
+    const medications = patientService.getMedicationsForPatient(patientId, ownerEmail);
+
+    return res.status(200).json({
+      success: true,
+      patientId,
+      medications: medications || [],
+    });
+  } catch (err) {
+    console.error(`Error retrieving medications for ${req.params?.patientId}: ${err.message}`);
+    return res.status(500).json({
+      error: 'An unexpected error occurred while retrieving medications.',
+    });
+  }
+});
+
 export default router;

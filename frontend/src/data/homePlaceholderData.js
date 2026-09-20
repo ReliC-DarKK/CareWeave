@@ -14,13 +14,13 @@ export const patientProfile = {
 };
 
 export const navigationItems = [
-  { id: 'home', label: 'Home', icon: 'home', active: true },
-  { id: 'journey', label: 'Care Journey', icon: 'journey', active: false },
-  { id: 'records', label: 'Health Records', icon: 'records', active: false },
-  { id: 'medications', label: 'Medications', icon: 'medications', active: false },
-  { id: 'appointments', label: 'Appointments', icon: 'appointments', active: false },
-  { id: 'team', label: 'Care Team', icon: 'team', active: false },
-  { id: 'messages', label: 'Messages', icon: 'messages', active: false },
+  { id: 'home', label: 'Home', icon: 'home', path: '/home', active: true },
+  { id: 'journey', label: 'Care Journey', icon: 'journey', path: '/care-journey', active: false },
+  { id: 'records', label: 'Health Records', icon: 'records', path: '/health-records', active: false },
+  { id: 'medications', label: 'Medications', icon: 'medications', path: '/medications', active: false },
+  { id: 'appointments', label: 'Appointments', icon: 'appointments', path: '/appointments', active: false },
+  { id: 'team', label: 'Care Team', icon: 'team', path: '/care-team', active: false },
+  { id: 'messages', label: 'Messages', icon: 'messages', path: '/messages', active: false },
 ];
 
 export const careAtGlanceData = {

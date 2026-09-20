@@ -103,18 +103,32 @@ router.get('/', authenticateToken, (req, res) => {
     const ownerEmail = req.user.email;
     const documents = databaseService.getDocumentsByOwner(ownerEmail);
 
-    // Return safe, sanitized document representations
-    const sanitizedDocuments = documents.map((doc) => ({
-      id: doc.id,
-      originalName: doc.originalName,
-      mimeType: doc.mimeType,
-      size: doc.size,
-      uploadedAt: doc.uploadedAt,
-      processingStatus: doc.processingStatus,
-      extractionStatus: doc.extractionStatus || null,
-      patientId: doc.patientId || null,
-      hasExtraction: doc.extractionStatus === 'EXTRACTED',
-    }));
+    // Return safe, sanitized document representations with summary metadata
+    const sanitizedDocuments = documents.map((doc) => {
+      const ext = databaseService.getExtractionByDocumentId(doc.id);
+      return {
+        id: doc.id,
+        originalName: doc.originalName,
+        mimeType: doc.mimeType,
+        size: doc.size,
+        uploadedAt: doc.uploadedAt,
+        processingStatus: doc.processingStatus,
+        extractionStatus: doc.extractionStatus || null,
+        patientId: doc.patientId || null,
+        hasExtraction: doc.extractionStatus === 'EXTRACTED',
+        documentDate: ext?.documentDate || null,
+        documentType: ext?.documentType || null,
+        doctor: ext?.doctor ? {
+          name: ext.doctor.name || null,
+          clinic: ext.doctor.clinic || null,
+          speciality: ext.doctor.speciality || null,
+        } : null,
+        counts: {
+          tests: Array.isArray(ext?.tests) ? ext.tests.length : 0,
+          medications: Array.isArray(ext?.medications) ? ext.medications.length : 0,
+        },
+      };
+    });
 
     return res.status(200).json({
       success: true,

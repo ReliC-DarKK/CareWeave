@@ -180,9 +180,12 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess, 
     }
 
     if (processingResult?.extraction?.status === 'EXTRACTED') {
+      const patientAssociated = processingResult?.document?.patientId;
       return (
         <p className="cw-processing-status cw-processing-ready">
-          Medical information extracted.
+          {patientAssociated
+            ? 'Medical information extracted and added to care timeline.'
+            : 'Medical information extracted. Document preserved without patient association.'}
         </p>
       );
     }

@@ -102,14 +102,17 @@ export async function extractMedicalInformation(documentId, options = {}) {
   // 3. Check persistent database first (prevents re-extraction and handles restarts)
   const persistedExtraction = databaseService.getExtractionByDocumentId(documentId);
   if (persistedExtraction) {
+    let assocPatient = null;
     if (!doc.patientId) {
       try {
-        patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, persistedExtraction.patient);
+        assocPatient = patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, persistedExtraction.patient);
       } catch {}
     }
+    const finalPatientId = assocPatient?.id || doc.patientId || null;
     return {
       document: {
         id: doc.id,
+        patientId: finalPatientId,
         status: doc.processingStatus,
         extractionStatus: EXTRACTION_STATUS.EXTRACTED,
       },
@@ -179,8 +182,9 @@ export async function extractMedicalInformation(documentId, options = {}) {
     });
 
     // 8. Associate document with patient record (Step 11)
+    let associatedPatient = null;
     try {
-      patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, structuredData.patient);
+      associatedPatient = patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, structuredData.patient);
     } catch (patientErr) {
       console.warn(`Patient association notice for ${documentId}: ${patientErr.message}`);
     }
@@ -194,6 +198,7 @@ export async function extractMedicalInformation(documentId, options = {}) {
     return {
       document: {
         id: doc.id,
+        patientId: associatedPatient?.id || doc.patientId || null,
         status: doc.processingStatus,
         extractionStatus: EXTRACTION_STATUS.EXTRACTED,
       },
