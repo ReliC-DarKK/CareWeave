@@ -25,6 +25,7 @@
 .cw-meter-arc-active {
   stroke-dasharray: 100;
   stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cw-meter-center-icon {

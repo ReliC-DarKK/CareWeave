@@ -31,6 +31,7 @@ export function registerDocument(metadata) {
     processingResult: null,
     extractionStatus: null,
     extractionResult: null,
+    patientId: metadata.patientId || null,
   };
 
   // Persist to SQLite

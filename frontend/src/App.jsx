@@ -85,11 +85,11 @@ function AppContent({ theme, onToggleTheme }) {
   }, [isAuthenticated, resolveActivePatient]);
 
   const handlePatientAssociated = useCallback((newPatientId) => {
-    if (newPatientId) {
+    if (newPatientId && !activePatientId) {
       setActivePatientId(newPatientId);
       resolveActivePatient(newPatientId);
     }
-  }, [resolveActivePatient]);
+  }, [activePatientId, resolveActivePatient]);
 
   // While restoring session from storage/verifying with backend
   if (isLoading) {

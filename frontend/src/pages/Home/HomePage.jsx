@@ -259,21 +259,15 @@ export default function HomePage({
       {/* 5. Document Upload Modal Dialog */}
       <DocumentUploadModal
         isOpen={isUploadModalOpen}
+        patientId={currentPatient?.id}
         onClose={() => {
           setIsUploadModalOpen(false);
-          loadCareJourney();
+          loadCareJourney(currentPatient?.id);
         }}
         onUploadSuccess={() => {}}
-        onExtractionComplete={(extractionResult) => {
-          const associatedPatientId = extractionResult?.document?.patientId;
-          if (associatedPatientId) {
-            if (onPatientAssociated) {
-              onPatientAssociated(associatedPatientId);
-            }
-            loadCareJourney(associatedPatientId);
-          } else {
-            loadCareJourney();
-          }
+        onExtractionComplete={() => {
+          // Accumulate into active patient's care journey — preserve history!
+          loadCareJourney(currentPatient?.id);
         }}
       />
     </main>

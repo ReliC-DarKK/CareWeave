@@ -67,6 +67,16 @@ router.post(
       const documentId = req.uploadedDocumentId || `doc_${Date.now()}`;
       const uploadedAt = new Date().toISOString();
 
+      // Check if uploaded within an active patient context
+      const requestedPatientId = req.body?.patientId ? String(req.body.patientId).trim() : null;
+      let assignedPatientId = null;
+      if (requestedPatientId) {
+        const targetPatient = databaseService.getPatientById(requestedPatientId);
+        if (targetPatient && targetPatient.ownerEmail === req.user.email) {
+          assignedPatientId = targetPatient.id;
+        }
+      }
+
       // Register document in persistent SQLite storage
       registerDocument({
         id: documentId,
@@ -76,6 +86,7 @@ router.post(
         size: req.file.size,
         ownerEmail: req.user.email,
         uploadedAt,
+        patientId: assignedPatientId,
       });
 
       // Return clean metadata without exposing server filesystem paths or file contents

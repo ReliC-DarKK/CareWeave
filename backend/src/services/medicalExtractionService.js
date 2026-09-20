@@ -184,7 +184,12 @@ export async function extractMedicalInformation(documentId, options = {}) {
     // 8. Associate document with patient record (Step 11)
     let associatedPatient = null;
     try {
-      associatedPatient = patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, structuredData.patient);
+      if (doc.patientId) {
+        associatedPatient = patientService.getPatientById(doc.patientId);
+      }
+      if (!associatedPatient) {
+        associatedPatient = patientService.associateDocumentWithPatient(documentId, doc.ownerEmail, structuredData.patient);
+      }
     } catch (patientErr) {
       console.warn(`Patient association notice for ${documentId}: ${patientErr.message}`);
     }

@@ -32,7 +32,7 @@ export default function CareState({ careState }) {
             d="M 15 80 A 65 65 0 0 1 145 80"
             fill="none"
             stroke="var(--cw-border-card)"
-            strokeWidth="7"
+            strokeWidth="8"
             strokeLinecap="round"
           />
 
@@ -42,8 +42,9 @@ export default function CareState({ careState }) {
             d="M 15 80 A 65 65 0 0 1 145 80"
             fill="none"
             stroke="url(#glanceArcGradient)"
-            strokeWidth="7"
+            strokeWidth="8"
             strokeLinecap="round"
+            pathLength="100"
           />
         </svg>
 

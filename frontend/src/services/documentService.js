@@ -57,7 +57,7 @@ export const documentService = {
    * @param {File} file
    * @returns {Promise<{ success: boolean, document: object }>}
    */
-  async uploadDocument(file) {
+  async uploadDocument(file, patientId = null) {
     const token = authService.getToken();
     if (!token) {
       throw new Error('Authentication required. Please log in to upload documents.');
@@ -70,6 +70,9 @@ export const documentService = {
 
     const formData = new FormData();
     formData.append('file', file);
+    if (patientId) {
+      formData.append('patientId', patientId);
+    }
 
     let response;
     try {
