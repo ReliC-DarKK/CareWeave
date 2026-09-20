@@ -59,6 +59,23 @@
   flex-wrap: wrap;
 }
 
+.cw-glance-empty-condition {
+  background-color: var(--cw-bg-surface);
+  border: 1px dashed var(--cw-border-medium);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.cw-cond-empty-icon {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
 .cw-glance-right-content {
   display: flex;
   align-items: center;

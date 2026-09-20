@@ -189,16 +189,34 @@ export const careJourneyService = {
       });
     }
 
-    // 4. Sort events chronologically (earliest to latest), with secondary deterministic sort by documentId
-    rawEvents.sort((a, b) => {
+    // 4. De-duplicate events by reportId or clinical signature
+    const seenEventKeys = new Set();
+    const uniqueEvents = [];
+
+    for (const evt of rawEvents) {
+      const reportId = evt.provenance?.reportId;
+      const testSig = evt.tests?.length || 0;
+      const medSig = evt.medications?.length || 0;
+      const fallbackKey = `${evt.documentType}|${evt.date}|${evt.doctor?.name || ''}|${evt.clinic || ''}|${testSig}|${medSig}`;
+      const dedupKey = reportId ? `report_${reportId}` : `sig_${fallbackKey}`;
+
+      if (seenEventKeys.has(dedupKey)) {
+        continue;
+      }
+      seenEventKeys.add(dedupKey);
+      uniqueEvents.push(evt);
+    }
+
+    // 5. Sort events chronologically (earliest to latest), with secondary deterministic sort by documentId
+    uniqueEvents.sort((a, b) => {
       if (a._timestamp !== b._timestamp) {
         return a._timestamp - b._timestamp;
       }
       return a.documentId.localeCompare(b.documentId);
     });
 
-    // 5. Clean internal sort keys before returning
-    const sanitizedEvents = rawEvents.map(({ _timestamp, ...rest }) => rest);
+    // 6. Clean internal sort keys before returning
+    const sanitizedEvents = uniqueEvents.map(({ _timestamp, ...rest }) => rest);
 
     return {
       patient: {

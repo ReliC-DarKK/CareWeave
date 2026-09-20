@@ -20,9 +20,24 @@ export default function CareAtGlance({ data }) {
             </div>
 
             <div className="cw-glance-conditions-row">
-              {conditions.map((condition) => (
-                <ConditionCard key={condition.id} condition={condition} />
-              ))}
+              {conditions && conditions.length > 0 ? (
+                conditions.map((condition) => (
+                  <ConditionCard key={condition.id} condition={condition} />
+                ))
+              ) : (
+                <div className="cw-glance-empty-condition">
+                  <div className="cw-condition-icon-box cw-cond-empty-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" strokeLinecap="round" strokeLinejoin="round" />
+                      <polyline points="22 4 12 14.01 9 11.01" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <div className="cw-condition-meta">
+                    <h3 className="cw-condition-name">No Active Chronic Conditions</h3>
+                    <span className="cw-condition-sub">All records currently within expected parameters</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

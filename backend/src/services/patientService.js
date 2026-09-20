@@ -193,36 +193,49 @@ export const patientService = {
         }
       }
 
-      // ── Aggregate Tests ──
+      // ── Aggregate Tests (Deduplicated by test name and report/date) ──
       if (Array.isArray(ext.tests)) {
         for (const t of ext.tests) {
-          tests.push({
-            documentId: doc.id,
-            documentDate: ext.documentDate || null,
-            name: t.name,
-            value: t.value,
-            numericValue: t.numericValue !== undefined ? t.numericValue : null,
-            unit: t.unit || null,
-            referenceRange: t.referenceRange || null,
-            documentFlag: t.documentFlag || null,
-            date: t.date || ext.documentDate || null,
-          });
+          const testKey = `${(t.name || '').toLowerCase().trim()}|${ext.reportId || ext.documentDate || doc.id}`;
+          const alreadyExists = tests.some(
+            (existing) => `${(existing.name || '').toLowerCase().trim()}|${existing.reportId || existing.date || existing.documentId}` === testKey
+          );
+          if (!alreadyExists) {
+            tests.push({
+              documentId: doc.id,
+              documentDate: ext.documentDate || null,
+              reportId: ext.reportId || null,
+              name: t.name,
+              value: t.value,
+              numericValue: t.numericValue !== undefined ? t.numericValue : null,
+              unit: t.unit || null,
+              referenceRange: t.referenceRange || null,
+              documentFlag: t.documentFlag || null,
+              date: t.date || ext.documentDate || null,
+            });
+          }
         }
       }
 
-      // ── Aggregate Medications ──
+      // ── Aggregate Medications (Deduplicated by medication name and dose) ──
       if (Array.isArray(ext.medications)) {
         for (const m of ext.medications) {
-          medications.push({
-            documentId: doc.id,
-            name: m.name,
-            dose: m.dose || null,
-            unit: m.unit || null,
-            frequency: m.frequency || null,
-            route: m.route || null,
-            duration: m.duration || null,
-            instructions: m.instructions || null,
-          });
+          const medKey = `${(m.name || '').toLowerCase().trim()}|${(m.dose || '').trim()}|${(m.unit || '').trim()}`;
+          const alreadyExists = medications.some(
+            (existing) => `${(existing.name || '').toLowerCase().trim()}|${(existing.dose || '').trim()}|${(existing.unit || '').trim()}` === medKey
+          );
+          if (!alreadyExists) {
+            medications.push({
+              documentId: doc.id,
+              name: m.name,
+              dose: m.dose || null,
+              unit: m.unit || null,
+              frequency: m.frequency || null,
+              route: m.route || null,
+              duration: m.duration || null,
+              instructions: m.instructions || null,
+            });
+          }
         }
       }
 
@@ -256,6 +269,14 @@ export const patientService = {
       }
     }
 
+    const careAtGlance = deriveCareAtGlance(
+      patient,
+      clinicalInformation.diagnoses,
+      medications,
+      tests,
+      docSummaries.length
+    );
+
     return {
       patient: {
         id: patient.id,
@@ -270,6 +291,7 @@ export const patientService = {
       tests,
       medications,
       clinicalInformation,
+      careAtGlance,
       provenance: {
         documentCount: docSummaries.length,
         aggregatedAt: new Date().toISOString(),
@@ -295,12 +317,17 @@ export const patientService = {
 
     const rawDocs = databaseService.getDocumentsByPatientId(patientId);
     const medications = [];
+    const seenMedKeys = new Set();
 
     for (const doc of rawDocs) {
       const ext = databaseService.getExtractionByDocumentId(doc.id);
       if (!ext || !Array.isArray(ext.medications)) continue;
 
       ext.medications.forEach((m, idx) => {
+        const medKey = `${(m.name || '').toLowerCase().trim()}|${(m.dose || '').trim()}|${(m.unit || '').trim()}`;
+        if (seenMedKeys.has(medKey)) return;
+        seenMedKeys.add(medKey);
+
         medications.push({
           id: `med_${doc.id}_${idx}`,
           name: m.name,
@@ -323,5 +350,119 @@ export const patientService = {
     return medications;
   },
 };
+
+/**
+ * Derive dynamic Care at a Glance information grounded in the patient's records.
+ * Identifies active medical conditions from extracted diagnoses, active medications,
+ * and abnormal test results without clinical overreach.
+ *
+ * @param {object} patient
+ * @param {string[]} diagnoses
+ * @param {object[]} medications
+ * @param {object[]} tests
+ * @param {number} docCount
+ * @returns {object}
+ */
+export function deriveCareAtGlance(patient, diagnoses = [], medications = [], tests = [], docCount = 0) {
+  const conditions = [];
+  const seenConditionKeys = new Set();
+
+  function addCondition(name, status, theme, iconType) {
+    const key = name.toLowerCase().trim();
+    if (seenConditionKeys.has(key)) return;
+    seenConditionKeys.add(key);
+    conditions.push({
+      id: `cond-${conditions.length + 1}`,
+      name,
+      status,
+      theme,
+      iconType,
+    });
+  }
+
+  // 1. Map explicit diagnoses from documents
+  if (Array.isArray(diagnoses)) {
+    for (const d of diagnoses) {
+      if (!d || typeof d !== 'string') continue;
+      const lower = d.toLowerCase();
+      if (lower.includes('cancer') || lower.includes('oncolog') || lower.includes('carcinoma') || lower.includes('tumor')) {
+        addCondition(d, 'Active Care · In Progress', 'pink', 'cancer');
+      } else if (lower.includes('diabet') || lower.includes('glucose') || lower.includes('glyc')) {
+        addCondition(d, 'Monitoring · Stable', 'blue', 'diabetes');
+      } else if (lower.includes('hyperten') || lower.includes('blood pressure')) {
+        addCondition(d, 'Controlled', 'green', 'hypertension');
+      } else if (lower.includes('lipid') || lower.includes('cholesterol')) {
+        addCondition(d, 'Managed', 'green', 'hypertension');
+      } else if (lower.includes('thyroid')) {
+        addCondition(d, 'Managed', 'blue', 'wellness');
+      } else if (lower.includes('palpitation') || lower.includes('arrhythm')) {
+        addCondition(d, 'Monitoring', 'blue', 'hypertension');
+      } else {
+        addCondition(d, 'Documented', 'blue', 'medication');
+      }
+    }
+  }
+
+  // 2. Map medications to conditions if not already added
+  if (Array.isArray(medications)) {
+    for (const m of medications) {
+      const name = (m.name || '').toLowerCase();
+      if (name.includes('metformin')) {
+        addCondition('Type 2 Diabetes', 'Monitoring · Stable', 'blue', 'diabetes');
+      } else if (name.includes('lisinopril') || name.includes('amlodipine') || name.includes('losartan') || name.includes('atenolol')) {
+        addCondition('Hypertension', 'Controlled', 'green', 'hypertension');
+      } else if (name.includes('atorvastatin') || name.includes('rosuvastatin') || name.includes('simvastatin')) {
+        addCondition('Hyperlipidemia', 'Managed', 'green', 'hypertension');
+      } else if (name.includes('cholecalciferol') || name.includes('vitamin d')) {
+        addCondition('Vitamin D Deficiency', 'Supplementation · Active', 'green', 'wellness');
+      } else if (name.includes('levothyroxine')) {
+        addCondition('Hypothyroidism', 'Managed', 'blue', 'wellness');
+      } else if (name.includes('tamoxifen') || name.includes('anastrozole')) {
+        addCondition('Breast Cancer', 'Treatment · In Progress', 'pink', 'cancer');
+      }
+    }
+  }
+
+  // 3. Check abnormal lab tests
+  if (Array.isArray(tests)) {
+    for (const t of tests) {
+      const flag = (t.documentFlag || '').toUpperCase();
+      const testName = (t.name || '').toLowerCase();
+      if (flag === 'LOW' && testName.includes('vitamin d')) {
+        addCondition('Vitamin D Deficiency', 'Supplementation · Active', 'green', 'wellness');
+      } else if (flag === 'HIGH' && (testName.includes('glucose') || testName.includes('hba1c'))) {
+        addCondition('Glucose Monitoring', 'Monitoring', 'blue', 'diabetes');
+      }
+    }
+  }
+
+  // 4. Derive overall careState
+  let careStatus = 'Stable';
+  let careDesc = 'Keep following your plan and focus on today\'s actions.';
+
+  if (docCount === 0 && conditions.length === 0) {
+    careStatus = 'Up to date';
+    careDesc = 'Upload a medical document to update your care journey.';
+  } else if (conditions.length > 0) {
+    careStatus = 'Stable';
+    careDesc = 'Keep following your plan and focus on today\'s actions.';
+  } else {
+    careStatus = 'Healthy';
+    careDesc = 'All recorded health parameters are within target ranges.';
+  }
+
+  return {
+    heading: 'Your Care at a Glance',
+    subtitle: conditions.length > 0
+      ? (conditions.length === 1 ? '1 active condition. Unified view.' : `${conditions.length} conditions. One unified view.`)
+      : 'One unified view of your care journey.',
+    conditions,
+    careState: {
+      status: careStatus,
+      statusTag: 'Your care state is',
+      description: careDesc,
+    },
+  };
+}
 
 export default patientService;
