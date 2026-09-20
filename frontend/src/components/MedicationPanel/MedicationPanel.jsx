@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import patientService from '../../services/patientService';
 import MedicationDetailModal from './MedicationDetailModal';
+import PillIcon from '../common/PillIcon';
 import './MedicationPanel.css';
 
 export default function MedicationPanel({ patientId, refreshTrigger }) {
@@ -76,7 +77,9 @@ export default function MedicationPanel({ patientId, refreshTrigger }) {
               onClick={() => setSelectedMedication(med)}
               aria-label={`View details for ${med.name}`}
             >
-              <div className="medication-icon" aria-hidden="true">💊</div>
+              <div className="medication-icon" aria-hidden="true">
+                <PillIcon size={26} />
+              </div>
               <div className="medication-info">
                 <h3 className="medication-name">{med.name}</h3>
                 {med.dose && <p className="medication-dose">{med.dose} {med.unit || ''}</p>}

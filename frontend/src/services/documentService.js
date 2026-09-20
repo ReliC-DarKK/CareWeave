@@ -174,7 +174,7 @@ export const documentService = {
    * Fetch all persisted documents for the authenticated user
    * @returns {Promise<{ success: boolean, documents: Array<object> }>}
    */
-  async getDocuments() {
+  async getDocuments(patientId = null) {
     const token = authService.getToken();
     if (!token) {
       throw new Error('Authentication required. Please log in to view documents.');
@@ -182,7 +182,10 @@ export const documentService = {
 
     let response;
     try {
-      response = await fetch(`${API_BASE_URL}/api/documents`, {
+      const url = patientId
+        ? `${API_BASE_URL}/api/documents?patientId=${encodeURIComponent(patientId)}`
+        : `${API_BASE_URL}/api/documents`;
+      response = await fetch(url, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

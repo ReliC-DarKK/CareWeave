@@ -112,7 +112,8 @@ router.post(
 router.get('/', authenticateToken, (req, res) => {
   try {
     const ownerEmail = req.user.email;
-    const documents = databaseService.getDocumentsByOwner(ownerEmail);
+    const requestedPatientId = req.query.patientId ? String(req.query.patientId).trim() : null;
+    const documents = databaseService.getDocumentsByOwner(ownerEmail, requestedPatientId);
 
     // Return safe, sanitized document representations with summary metadata
     const sanitizedDocuments = documents.map((doc) => {

@@ -1,3 +1,7 @@
+.cw-health-records-page {
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
+}
+
 .cw-records-header {
   display: flex;
   align-items: center;
@@ -6,33 +10,37 @@
 }
 
 .cw-records-title {
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text-primary, #0f172a);
+  color: var(--cw-text-primary, #0F172A);
+  letter-spacing: -0.2px;
   margin: 0;
 }
 
 .cw-records-subtitle {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary, #64748b);
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
+  font-size: 0.88rem;
+  color: var(--cw-text-muted, #64748B);
   margin: 4px 0 0 0;
 }
 
 .cw-records-upload-btn {
-  padding: 10px 18px;
-  background: var(--color-primary, #6366f1);
-  color: #ffffff;
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
+  padding: 10px 20px;
+  background: var(--cw-primary, #5B4DF5);
+  color: #FFFFFF;
   border: none;
-  border-radius: var(--radius-md, 8px);
+  border-radius: var(--cw-radius-md, 12px);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(91, 77, 245, 0.2);
 }
 
 .cw-records-upload-btn:hover {
-  opacity: 0.92;
+  background: var(--cw-primary-hover, #493BE0);
   transform: translateY(-1px);
 }
 
@@ -40,7 +48,8 @@
 .cw-records-error {
   padding: 48px;
   text-align: center;
-  color: var(--color-text-secondary, #64748b);
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
+  color: var(--cw-text-muted, #64748B);
 }
 
 .cw-records-grid {
@@ -50,21 +59,23 @@
 }
 
 .cw-record-card-btn {
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
   display: flex;
   flex-direction: column;
   text-align: left;
-  background: var(--color-surface, #ffffff);
-  border: 1px solid var(--color-border, #e2e8f0);
-  border-radius: var(--radius-lg, 14px);
+  background: var(--cw-bg-surface, #FFFFFF);
+  border: 1px solid var(--cw-border-card, #E2E8F0);
+  border-radius: var(--cw-radius-lg, 16px);
   padding: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
+  box-shadow: var(--cw-shadow-card);
 }
 
 .cw-record-card-btn:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: var(--cw-primary-border, #DDD6FE);
+  box-shadow: var(--cw-shadow-hover);
   transform: translateY(-2px);
 }
 
@@ -76,14 +87,14 @@
 }
 
 .cw-record-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #f1f5f9;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--cw-radius-sm, 8px);
+  background: var(--cw-primary-light, #F0EEFF);
+  border: 1px solid var(--cw-primary-border, #DDD6FE);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
@@ -93,20 +104,22 @@
 }
 
 .cw-record-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-text-primary, #0f172a);
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cw-text-primary, #0F172A);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-transform: capitalize;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .cw-record-filename {
   display: block;
   font-size: 0.8rem;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--cw-text-subtle, #94A3B8);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -114,24 +127,41 @@
 }
 
 .cw-record-badge {
+  font-family: var(--cw-font, 'Montserrat', sans-serif);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 3px 7px;
-  background: #dcfce7;
-  color: #15803d;
-  border-radius: 4px;
+  padding: 3px 8px;
+  background: var(--cw-teal-bg, #D1FAE5);
+  color: var(--cw-teal-text, #115E59);
+  border: 1px solid var(--cw-teal-border, #99F6E4);
+  border-radius: var(--cw-radius-xs, 4px);
   flex-shrink: 0;
 }
 
 .cw-record-card-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.85rem;
-  color: var(--color-text-secondary, #475569);
+  color: var(--cw-text-secondary, #334155);
   margin-bottom: 16px;
   flex: 1;
+}
+
+.cw-record-date-line,
+.cw-record-doctor-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--cw-text-secondary, #334155);
+}
+
+.cw-record-date-line svg,
+.cw-record-doctor-line svg {
+  color: var(--cw-text-muted, #64748B);
+  flex-shrink: 0;
 }
 
 .cw-record-card-footer {
@@ -139,23 +169,35 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 12px;
-  border-top: 1px solid var(--color-border, #f1f5f9);
-  font-size: 0.8rem;
+  border-top: 1px solid var(--cw-border-subtle, #EEF2F6);
+  font-size: 0.82rem;
 }
 
 .cw-record-counts {
   display: flex;
   gap: 6px;
-  color: var(--color-text-muted, #64748b);
+  color: var(--cw-text-muted, #64748B);
   font-weight: 500;
 }
 
 .cw-record-arrow {
-  color: #6366f1;
+  color: var(--cw-primary, #5B4DF5);
   font-weight: 600;
+  font-size: 0.82rem;
   transition: transform 0.15s ease;
 }
 
 .cw-record-card-btn:hover .cw-record-arrow {
   transform: translateX(3px);
+}
+
+/* Dark Mode */
+[data-theme='dark'] .cw-record-card-btn {
+  background: var(--cw-bg-surface, #131A2A);
+  border-color: var(--cw-border-card, #243250);
+}
+
+[data-theme='dark'] .cw-record-icon-box {
+  background: var(--cw-primary-light, #21254A);
+  border-color: var(--cw-primary-border, #383D75);
 }
